@@ -11,8 +11,25 @@
 |
 */
 
-Route::get('/', 'EventsController@index');
 
 Auth::routes();
+
+
+/*Route::get('/events/list', '');
+Route::get('/events/map', 'EventsController@eventsMap');*/
+
+Route::get('/events/list',[
+    'as' => 'events.list',
+    'uses' => 'EventsController@eventsList'
+]);
+
+Route::get('/events/map',[
+    'as' => 'events.map',
+    'uses' => 'EventsController@eventsMap'
+]);
+
+Route::get('/', function () {
+    return redirect()->route('events.list');
+});
 
 Route::get('/home', 'HomeController@index')->name('home');

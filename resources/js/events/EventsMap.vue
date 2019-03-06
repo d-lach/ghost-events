@@ -1,15 +1,11 @@
 <template>
     <div class="container">
-        <div class="row justify-content-center">
-            <event-card v-for="(event, index) in events" :key="index" :event="event"></event-card>
-        </div>
+        Here will be events map;
     </div>
 </template>
 
 <script>
-    import EventCard from "./EventCard.vue";
-    import EventsMockup from "../mockup/EventsMockup";
-
+//    import EventCard from "./EventCard.vue";
     export default {
         data() {
             return {
@@ -18,11 +14,11 @@
         },
         mounted() {
             for (let i = 0; i < 10; i++) {
-                this.events.push(EventsMockup.randomEvent);
+                this.events.push(this.generateEventMockup());
             }
         },
         methods: {
-         /*   generateEventMockup() {
+            generateEventMockup() {
                 return {
                     // miejsce, opis, datę i godzinę, czas trwania, maksymalną liczbę gości, datę końca zbierania zgłoszeń,
                     name: "Great event-name!",
@@ -38,11 +34,9 @@
                     maxGuests: 99,
                     openTo: "20-12-2020",
                 }
-            }*/
+            }
         },
          components: {
-                    EventCard
                 },
-       //
     }
 </script>
