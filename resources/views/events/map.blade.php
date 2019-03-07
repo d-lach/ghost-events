@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.map-page')
 
 @section('content')
 {{--<div class="container">--}}

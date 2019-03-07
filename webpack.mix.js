@@ -32,4 +32,5 @@ mix.js('resources/js/app.js', 'public/js').sourceMaps()
             })
         ]
     })
-   .sass('resources/sass/app.scss', 'public/css');
+   .sass('resources/sass/app.scss', 'public/css')
+    .sass('resources/sass/map.scss', 'public/css');

@@ -6,12 +6,20 @@
  */
 
 require('./bootstrap');
-import VueLayers from 'vuelayers'
-import 'vuelayers/lib/style.css' // needs css-loader
+
+import * as VueGoogleMaps from 'vue2-google-maps'
+
+// import VueLayers from 'vuelayers'
+// import 'vuelayers/lib/style.css' // needs css-loader
 
 window.Vue = require('vue');
 
-Vue.use(VueLayers);
+// Vue.use(VueLayers);
+window.Vue.use(VueGoogleMaps, {
+    load: {
+        key: process.env.MIX_GOOGLE_API_KEY
+    }
+});
 
 /**
  * The following block of code may be used to automatically register your
