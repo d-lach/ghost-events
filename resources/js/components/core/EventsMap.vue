@@ -29,18 +29,30 @@
             for (let i = 0; i < 10; i++) {
                 this.events.push(EventsMockup.randomEvent);
             }
-            Geolocator.locate()
-                .then(this.initializeAtLocation.bind(this))
-                .catch(this.jumpToCrashSite.bind(this));
+
+            this.centerAtHome();
         },
         methods: {
             setBaseLocationAt(x, y, z = 12) {
                 this.center = {lat: x, lng: y};
                 this.zoom = z;
             },
-            initializeAtLocation(location) {
-                this.home = location;
-                this.setBaseLocationAt(location.coords.latitude, location.coords.longitude, 12)
+            centerAtHome() {
+                this.findHomeLocationViaBrowser()
+                    .catch(this.findHomeLocationViaApi.bind(this))
+                    .then((position) => this.setBaseLocationAt(position.coords.latitude, position.coords.longitude, 12))
+                    .catch(this.jumpToCrashSite.bind(this));
+            },
+            findHomeLocationViaBrowser() {
+                return new Promise((resolve, reject) => {
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(resolve, reject);
+                    } else
+                        reject();
+                })
+            },
+            findHomeLocationViaApi() {
+                return Geolocator.locate();
             },
             jumpToCrashSite() { // just for fun :)
                 this.setBaseLocationAt(31.254306, -24.258472, 9);
