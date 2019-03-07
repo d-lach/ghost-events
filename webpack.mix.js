@@ -17,6 +17,12 @@ const imageminMozjpeg = require('imagemin-mozjpeg');
 
 mix.js('resources/js/app.js', 'public/js').sourceMaps()
     .webpackConfig({
+        resolve: {
+            extensions: ['.js', '.vue', '.json'],
+            alias: {
+                '~': __dirname + '/resources/js'
+            },
+        },
         plugins: [
             new CopyWebpackPlugin([{
                 from: 'resources/assets/images',
