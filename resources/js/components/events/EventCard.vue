@@ -1,9 +1,10 @@
 <template>
-
-    <div class="card" style=";">
-        <div class="card-header">{{ event.name }}</div>
-        <div class="card-body">
-            {{ event.description }}
+    <div class="wrapper">
+        <div class="abstract" style=";">
+            <div class="card-header">{{ event.name }}</div>
+            <div class="card-body">
+                {{ event.description }}
+            </div>
         </div>
     </div>
 </template>
@@ -12,21 +13,22 @@
     export default {
         props: ['event'],
         mounted() {
-            console.log('Component mounted.')
         }
     }
 </script>
 
 <style scoped>
-
-    .card {
-        width: 18rem;
-        height: 15em;
-        /*max-width: 20em;*/
+    .wrapper {
+        position: absolute;
+        z-index: 1000;
+        background: #fff;
+        border: #000 solid 1px;
         margin: 1em;
     }
 
-    .card-body {
-        overflow: auto;
+    .abstract {
+        max-width: 450px;
+        width: 25vh;
+        height: 65vh;
     }
 </style>

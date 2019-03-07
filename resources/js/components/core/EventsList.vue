@@ -1,14 +1,14 @@
 <template>
     <div class="container">
         <div class="row justify-content-center">
-            <event-card v-for="(event, index) in events" :key="index" :event="event"></event-card>
+            <event-abstract v-for="(event, index) in events" :key="index" :event="event"></event-abstract>
         </div>
     </div>
 </template>
 
 <script>
-    import EventCard from "../events/EventCard.vue";
-    import EventsMockup from "../../mockup/EventsMockup";
+    import EventAbstract from "../events/EventAbstract.vue";
+    import EventsMockup from "~/mockup/EventsMockup";
 
     export default {
         data() {
@@ -21,11 +21,9 @@
                 this.events.push(EventsMockup.randomEvent);
             }
         },
-        methods: {
-
+        methods: {},
+        components: {
+            EventAbstract
         },
-         components: {
-                    EventCard
-                },
     }
 </script>
