@@ -17,5 +17,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')
-    ->resource('events', 'events\EventsApiController', ['except' => ['index']]);
+
+// todo we should add passport authentication letter on
+Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'show']]);
+//Route::middleware('auth:api')
+//    ->resource('events', 'events\EventsApiController', ['except' => ['index']]);

@@ -43,7 +43,7 @@ class CreateEventsUsersTables extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('events_invatations');
+        Schema::dropIfExists('events_invitations');
         Schema::dropIfExists('events_guest');
         Schema::dropIfExists('events_hosts');
     }
