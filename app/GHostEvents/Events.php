@@ -2,8 +2,10 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\DB;
-
+/**
+ * Class Events - defines logic of events modification
+ * @package App
+ */
 class Events
 {
     function create(int $userId, array $eventData)
@@ -16,46 +18,34 @@ class Events
 
     function update(int $eventId, array $eventData)
     {
-        $event = Event::updateOrCreate(['id' => $eventId], $eventData); //->update($eventData);
+        $event = Event::updateOrCreate(['id' => $eventId], $eventData);
         $event->save();
-//        $this->setAsHost($userId, $event);
 
         return $event;
     }
 
-
     function setAsHost(int $userId, $eventOrId)
     {
-        $event = $this->_retrieveEvent($eventOrId); // Event::find($eventId);
+        $event = $this->_retrieveEvent($eventOrId);
 
         $host = $event->host();
         if ($host !== null)
             $host->delete(); // remove other hosts
         $event->addHost($userId);
-        // host user is also a guest
 
+        // host user is also a guest
+        // print "goscie:" . $event->guests()->get() . " am I # ". $userId . " a guest? " . ($event->hasGuest($userId) ? "yes" : "no");
         if (!$event->hasGuest($userId)) {
             $this->setAsGuest($userId, $event);
         }
-
-        /* DB::table('events_hosts')->insert(
-             ['event_id' => $event->id, 'user_id' => $userId]
-         );*/
-
     }
 
     function setAsGuest(int $userId, $eventOrId)
     {
         $event = $this->_retrieveEvent($eventOrId);
 
-
-//        $event =
         $event->removeInvitation($userId);
         $event->addGuest($userId);
-
-//        DB::table('events_guests')->insert(
-//            ['event_id' => $eventId, 'user_id' => $userId]
-//        );
     }
 
     function removeGuest(int $userId, $eventOrID)
@@ -63,9 +53,7 @@ class Events
         $event = $this->_retrieveEvent($eventOrID);
 
 
-//        $event =
         $event->removeGuest($userId);
-//        $event->addGuest($userId);
     }
 
     function invite(int $userId, $eventOrId)
@@ -75,28 +63,24 @@ class Events
             return;
 
         $event->invite($userId);
-        /* DB::table('events_invitations')->insert(
-             ['event_id' => $eventId, 'user_id' => $userId]
-         );*/
     }
 
 
     function getFull($eventOrId)
     {
         $event = $this->_retrieveEvent($eventOrId);
-        return ["event" => $event, "guests" => $event->guests(), "host" => $event->host()];
+        return ["event" => $event, "guests" => $event->guests()->get(), "host" => $event->host()];
     }
 
     function getGuestsList($eventOrId)
     {
-        return $this->_retrieveEvent($eventOrId)->guests();
+        return $this->_retrieveEvent($eventOrId)->guests()->get();
     }
 
     function getHost($eventOrId)
     {
         return $this->_retrieveEvent($eventOrId)->host();
     }
-
 
     /**
      * @param int|Event $eventOrId
