@@ -2,12 +2,42 @@
 
 namespace App;
 
+use App\Exceptions\PrivateEventException;
+use Illuminate\Support\Facades\DB;
+
 /**
  * Class Events - defines logic of events modification
  * @package App
  */
 class Events
 {
+
+    /**
+     * @param int|null $userIdOrNulll
+     * @return array|string
+     */
+    function findAllAvailable(?int $userIdOrNulll)
+    {
+        if ($userIdOrNulll === null)
+            return Event::where(['private' => false])->get(); // return public events
+
+
+        return DB::select('
+select * from events where events.private = 1 
+UNION DISTINCT
+ select events.* from events join events_guests on events_guests.event_id = events.id and events_guests.user_id = 1
+ UNION DISTINCT
+ select events.* from events join events_hosts on events_hosts.event_id = events.id and events_hosts.user_id = 1
+UNION DISTINCT
+select events.* from events join events_invitations on events_invitations.event_id = events.id and events_invitations.user_id = 1
+    ');
+    }
+
+    function getAllOf(int $userId)
+    {
+        return User::find($userId)->hosted()->get();
+    }
+
     function create(int $userId, array $eventData)
     {
         $event = Event::create($eventData);
@@ -34,7 +64,6 @@ class Events
         $event->addHost($userId);
 
         // host user is also a guest
-        // print "goscie:" . $event->guests()->get() . " am I # ". $userId . " a guest? " . ($event->hasGuest($userId) ? "yes" : "no");
         if (!$event->hasGuest($userId)) {
             $this->setAsGuest($userId, $event);
         }
@@ -44,8 +73,15 @@ class Events
     {
         $event = $this->_retrieveEvent($eventOrId);
 
+        // user cannot join private event without invitation
+        if ($event->private && !($event->isInvited($userId))) {
+            throw new PrivateEventException();
+        }
+
+
         $event->removeInvitation($userId);
         $event->addGuest($userId);
+        return true;
     }
 
     function removeGuest(int $userId, $eventOrID)

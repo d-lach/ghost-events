@@ -13,6 +13,7 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        PrivateEventException::class
         //
     ];
 
@@ -29,7 +30,7 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * @param  \Exception  $exception
+     * @param  \Exception $exception
      * @return void
      */
     public function report(Exception $exception)
@@ -40,12 +41,18 @@ class Handler extends ExceptionHandler
     /**
      * Render an exception into an HTTP response.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @param  \Illuminate\Http\Request $request
+     * @param  \Exception $exception
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        //if ($exception instanceof PrivateEventException) {
+         //   return $request->expectsJson() ?
+         //       $this->prepareJsonResponse($request, $exception)//$request->json(["error" => $exception->getMessage()])
+        //        : $this->prepareResponse($request, $exception);
+       // } else {
+            return parent::render($request, $exception);
+       // }
     }
 }

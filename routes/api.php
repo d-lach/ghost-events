@@ -17,13 +17,43 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('auth:api')
-    ->resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
+//Route::middleware('auth:api')
+//    ->resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
 //Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
 
 Route::prefix('events')
     ->middleware('auth:api')
     ->group(function () {
+
+        Route::post('',[
+            'as' => 'events.store',
+            'uses' => 'events\EventsApiController@store'
+        ]);
+
+        Route::get('mine',[
+            'as' => 'events.user',
+            'uses' => 'events\EventsApiController@mine'
+        ]);
+
+        Route::get('all',[
+            'as' => 'events.user',
+            'uses' => 'events\EventsApiController@all'
+        ]);
+
+        Route::put('{eventId}/update',[
+            'as' => 'events.update',
+            'uses' => 'events\EventsApiController@update'
+        ]);
+
+        Route::delete('{eventId}/destroy',[
+            'as' => 'events.destroy',
+            'uses' => 'events\EventsApiController@destroy'
+        ]);
+
+        Route::get('{eventId}/',[
+            'as' => 'events.show',
+            'uses' => 'events\EventsApiController@show'
+        ]);
 
         Route::post('{eventId}/join',[
             'as' => 'events.join',
@@ -39,6 +69,9 @@ Route::prefix('events')
             'as' => 'events.invite',
             'uses' => 'events\EventsApiController@invite'
         ]);
+
+
+
     });
 
 //Route::middleware('auth:api')

@@ -49,6 +49,12 @@ class Event extends Model
             ->exists();
     }
 
+    function isInvited(int $userId) {
+        return $this->invited()
+            ->where(['user_id' => $userId])
+            ->exists();
+    }
+
     function addGuest(int $userId)
     {
         DB::table('events_guests')->insert(
@@ -64,7 +70,8 @@ class Event extends Model
 
     function invite(int $userId)
     {
-        DB::table('events_invitations')->insert(
+        DB::table('events_invitations')->updateOrInsert(
+            ['event_id' => $this->id, 'user_id' => $userId],
             ['event_id' => $this->id, 'user_id' => $userId]
         );
     }

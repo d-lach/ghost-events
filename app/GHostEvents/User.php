@@ -36,4 +36,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    function hosted()
+    {
+        return $this->belongsToMany('App\Event', 'events_hosts');
+    }
+
+    function attended()
+    {
+        return $this->belongsToMany('App\Event', 'events_guests');
+    }
+
+    function invitedTo()
+    {
+        return $this->belongsToMany('App\Event', 'events_invitations');
+    }
 }

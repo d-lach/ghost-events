@@ -13,20 +13,30 @@ class EventsApiController extends Controller
 
     private $events = null;
 
+    /**
+     * EventsApiController constructor.
+     * @param Events $events
+     */
     function __construct(Events $events)
     {
         $this->events = $events;
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+    public function all(Request $request) {
+        return response()->json($this->events->findAllAvailable(Auth::id()));
     }
+
+    public function mine(Request $request) {
+        return response()->json($this->events->getAllOf(Auth::id()));
+    }
+
+    /*public function all() {
+        return response()->json($this->events->findAllAvailable($id));
+    }
+
+    public function mine() {
+        return response()->json($this->events->getAllOf());
+    }*/
 
     /**
      * Store a newly created resource in storage.
@@ -42,7 +52,9 @@ class EventsApiController extends Controller
     }
 
     public function join(int $eventId) {
-        $this->events->setAsGuest(Auth::id(), $eventId);
+        $success = $this->events->setAsGuest(Auth::id(), $eventId);
+       // if (!$success)
+       //     return response()->json(["error" => "event is private"]);
     }
 
     public function leave(int $eventId) {
@@ -50,7 +62,7 @@ class EventsApiController extends Controller
     }
 
     public function invite(Request $request, int $eventId) {
-        foreach ($request->get('usersIds') as $userId) {
+        foreach ($request->post('usersIds') as $userId) {
             $this->events->invite($userId, $eventId);
         }
     }
@@ -63,7 +75,8 @@ class EventsApiController extends Controller
      */
     public function show($id)
     {
-        return $this->events->getFull($id);
+        // return response()->json(["e" => $this->events->getFull($id), "u" => Auth::user()]);
+        return response()->json($this->events->getFull($id));
     }
 
     /**
