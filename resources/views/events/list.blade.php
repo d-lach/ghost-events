@@ -4,6 +4,6 @@
 
 
             <events-list></events-list>
-        </div>
+
 
 @endsection

@@ -18,14 +18,15 @@ Auth::routes();
 /*Route::get('/events/list', '');
 Route::get('/events/map', 'EventsController@eventsMap');*/
 
-Route::get('/events/list',[
+
+Route::get('/events',[
     'as' => 'events.list',
-    'uses' => 'EventsController@eventsList'
+    'uses' => 'events\EventsController@eventsList'
 ]);
 
 Route::get('/events/map',[
     'as' => 'events.map',
-    'uses' => 'EventsController@eventsMap'
+    'uses' => 'events\EventsController@eventsMap'
 ]);
 
 Route::get('/', function () {
@@ -33,3 +34,8 @@ Route::get('/', function () {
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
+// middleware('auth')->
+
+
+//Route::post('/events2', 'events\EventsApiController@store');
+
