@@ -17,8 +17,29 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::middleware('auth:api')
+    ->resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
+//Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
 
-// todo we should add passport authentication letter on
-Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'show']]);
+Route::prefix('events')
+    ->middleware('auth:api')
+    ->group(function () {
+
+        Route::post('{eventId}/join',[
+            'as' => 'events.join',
+            'uses' => 'events\EventsApiController@join'
+        ]);
+
+        Route::post('{eventId}/leave',[
+            'as' => 'events.leave',
+            'uses' => 'events\EventsApiController@leave'
+        ]);
+
+        Route::post('{eventId}/invite',[
+            'as' => 'events.invite',
+            'uses' => 'events\EventsApiController@invite'
+        ]);
+    });
+
 //Route::middleware('auth:api')
 //    ->resource('events', 'events\EventsApiController', ['except' => ['index']]);

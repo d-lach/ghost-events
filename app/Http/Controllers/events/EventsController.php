@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\events;
 
-use Illuminate\Http\Request;
+use App\Events;
 use App\Http\Controllers\Controller;
 
 class EventsController extends Controller
@@ -12,7 +12,7 @@ class EventsController extends Controller
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(Events $events)
     {
 //        $this->middleware('auth');
     }

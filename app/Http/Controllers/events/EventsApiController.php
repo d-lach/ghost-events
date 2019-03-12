@@ -5,8 +5,8 @@ namespace App\Http\Controllers\events;
 use App\Events;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Response;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class EventsApiController extends Controller
 {
@@ -17,7 +17,6 @@ class EventsApiController extends Controller
     {
         $this->events = $events;
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -39,16 +38,15 @@ class EventsApiController extends Controller
     {
         $event = $this->events->create(1, $this->eventValidator($request->all())->validate());
 
-//      $event = Event::create($validated);
-        return $event; // Response::make("Ok");
+        return $event;
     }
 
     public function join(int $eventId) {
-        $this->events->setAsGuest(Auth()::user->id, $eventId);
+        $this->events->setAsGuest(Auth::id(), $eventId);
     }
 
     public function leave(int $eventId) {
-        $this->events->removeGuest(Auth()::user->id, $eventId);
+        $this->events->removeGuest(Auth::id(), $eventId);
     }
 
     public function invite(Request $request, int $eventId) {
@@ -65,7 +63,7 @@ class EventsApiController extends Controller
      */
     public function show($id)
     {
-        //
+        return $this->events->getFull($id);
     }
 
     /**
@@ -86,13 +84,12 @@ class EventsApiController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $validator = $this->eventValidator($request->all(), false);
         $event = $this->events->update($id, $validator->validate());
 
         return $event;
-        //
     }
 
     /**
