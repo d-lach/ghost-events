@@ -4,6 +4,7 @@ namespace App\Http\Controllers\events;
 
 use App\Events;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -23,20 +24,12 @@ class EventsApiController extends Controller
     }
 
     public function all(Request $request) {
-        return response()->json($this->events->findAllAvailable(Auth::id()));
+        return response()->json($this->events->findAllAvailable(Auth::id(), Input::get('perPage')));
     }
 
     public function mine(Request $request) {
         return response()->json($this->events->getAllOf(Auth::id()));
     }
-
-    /*public function all() {
-        return response()->json($this->events->findAllAvailable($id));
-    }
-
-    public function mine() {
-        return response()->json($this->events->getAllOf());
-    }*/
 
     /**
      * Store a newly created resource in storage.

@@ -14,12 +14,19 @@ class Events
 
     /**
      * @param int|null $userIdOrNulll
+     * @param int|null $perPage
      * @return array|string
      */
-    function findAllAvailable(?int $userIdOrNulll)
+    function findAllAvailable(?int $userIdOrNulll, $perPage = null)
     {
+
+        if (!$perPage)
+            $perPage = 25;
+
         if ($userIdOrNulll === null)
-            return Event::where(['private' => false])->get(); // return public events
+            return Event::where(['private' => false]) // return public events
+                ->orderBy('starts_at', 'ASC')
+                ->paginate($perPage);
 
         $allPublic = DB::table('events')
             ->where('private', '=', 0)
@@ -48,7 +55,8 @@ class Events
             ->union($userIsGuest)
             ->union($userIsInvited)
             ->orderBy('starts_at', 'ASC')
-            ->get()->toArray();
+            ->paginate($perPage);
+           // ->get()->toArray();
 
     }
 
