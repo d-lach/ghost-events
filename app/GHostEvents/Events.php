@@ -21,16 +21,35 @@ class Events
         if ($userIdOrNulll === null)
             return Event::where(['private' => false])->get(); // return public events
 
+        $allPublic = DB::table('events')
+            ->where('private', '=', 0)
+            ->whereRaw('starts_at > CURRENT_TIMESTAMP()')
+            ->whereRaw('closes_at > CURRENT_TIMESTAMP()');
 
-        return DB::select('
-select * from events where events.private = 1 
-UNION DISTINCT
- select events.* from events join events_guests on events_guests.event_id = events.id and events_guests.user_id = 1
- UNION DISTINCT
- select events.* from events join events_hosts on events_hosts.event_id = events.id and events_hosts.user_id = 1
-UNION DISTINCT
-select events.* from events join events_invitations on events_invitations.event_id = events.id and events_invitations.user_id = 1
-    ');
+        $buildUserRelatedEventsQuery = function($table) use ($userIdOrNulll) {
+            return DB::table('events')
+                ->select('events.*')
+                ->join($table, function ($join) use($table, $userIdOrNulll) {
+                    $join->on('events.id', '=', $table . '.event_id')
+                        ->where($table . '.user_id', '=', $userIdOrNulll);
+                })
+                ->where('events.private', '=', true)
+                ->whereRaw('events.starts_at > CURRENT_TIMESTAMP()')
+                ->whereRaw('events.closes_at > CURRENT_TIMESTAMP()');
+        };
+
+        $hostedByUser =  $buildUserRelatedEventsQuery('events_hosts');
+        $userIsGuest =  $buildUserRelatedEventsQuery('events_guests');
+        $userIsInvited =  $buildUserRelatedEventsQuery('events_invitations');
+
+
+        return $allPublic
+            ->union($hostedByUser)
+            ->union($userIsGuest)
+            ->union($userIsInvited)
+            ->orderBy('starts_at', 'ASC')
+            ->get()->toArray();
+
     }
 
     function getAllOf(int $userId)

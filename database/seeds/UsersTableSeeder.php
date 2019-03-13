@@ -14,7 +14,7 @@ class UsersTableSeeder extends Seeder
         $users = [];
         $passwordEncrypted = bcrypt('testowe');
 
-        for ($i = 0; $i < 50; $i++) {
+        for ($i = 0; $i < 500; $i++) {
             $users[] = [
                 'name' => 'test x' . $i,
                 'email' => 'testx'. $i . '@test',

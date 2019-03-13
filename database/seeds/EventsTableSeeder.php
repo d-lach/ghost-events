@@ -14,10 +14,10 @@ class EventsTableSeeder extends Seeder
     public function run()
     {
         $events = [];
-        for ($i = 0; $i < 150; $i++) {
-            $startAt = $this->randomDate('1991-12-21 12:01', '2121-12-21 00:01');
-            $endAt = $this->randomDate($startAt, '2121-12-21 23:59');
-            $closeAt = $this->randomDate('1991-12-21 00:01', $endAt);
+        for ($i = 0; $i < 1500; $i++) {
+            $startAt = $this->randomDate('2018-01-01 12:01', '2020-01-01 00:01');
+            $endAt = $this->randomDate($startAt, '2020-01-01 23:59');
+            $closeAt = $this->randomDate('2018-01-01 00:01', $endAt);
             $events[] = [
                 'name' => $this->randomName(),
                 'description' => $this->getDescription(),
@@ -38,7 +38,8 @@ class EventsTableSeeder extends Seeder
     }
 
     private function randomName() {
-       return array_rand(["nazwa testowa", "FYRE festival", "woodstock", "opener", "Burning Man", "Carnivale", "Snowbombing"]) . (++$this->counter);
+        $names = ["nazwa testowa", "FYRE festival", "woodstock", "opener", "Burning Man", "Carnivale", "Snowbombing"];
+       return $names[array_rand($names)] . '-' . (++$this->counter);
     }
 
     private function randomInt(int $min = 0, int $max = 100) {
