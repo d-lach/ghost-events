@@ -7,15 +7,16 @@
                 :map-type-id="mapType"
                 style="width: 100%; height: 100%"
         >
-
-            <gmap-marker v-if="event.marker.enabled"
-                         :position="event.marker.position"
-                         :opacity="event.marker.opacity"
-                         :draggable="event.marker.draggable"
-                         @click="openEvent(event)"
-                         v-for="event in events"
-                         :key="event.id">
-            </gmap-marker>
+            <GmapCluster>
+                <gmap-marker v-if="event.marker.enabled"
+                             :position="event.marker.position"
+                             :opacity="event.marker.opacity"
+                             :draggable="event.marker.draggable"
+                             @click="openEvent(event)"
+                             v-for="event in events"
+                             :key="event.id">
+                </gmap-marker>
+            </GmapCluster>
         </GmapMap>
     </div>
 

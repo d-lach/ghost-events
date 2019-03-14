@@ -30,6 +30,7 @@
         "imagemin-webpack-plugin": "^2.4.2",
         "jpegtran-bin": "^4.0.0",
         "laravel-vue-pagination": "^2.3.0",
+        "marker-clusterer-plus": "^2.1.4",
         "mozjpeg": "^6.0.1",
         "optipng-bin": "^5.1.0",
         "vue2-google-maps": "^0.10.6",

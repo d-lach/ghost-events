@@ -1,6 +1,7 @@
 require('./bootstrap');
 
 import * as VueGoogleMaps from 'vue2-google-maps'
+import GmapCluster from 'vue2-google-maps/dist/components/cluster';
 
 window.Vue = require('vue');
 
@@ -9,6 +10,8 @@ window.Vue.use(VueGoogleMaps, {
         key: process.env.MIX_GOOGLE_API_KEY
     }
 });
+
+Vue.component('GmapCluster', GmapCluster);
 
 // import EventsPagination from "./components/events/EventsPagination.vue";
 // Vue.component("events-pagination", EventsPagination); //
