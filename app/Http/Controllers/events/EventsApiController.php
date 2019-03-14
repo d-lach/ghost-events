@@ -24,7 +24,9 @@ class EventsApiController extends Controller
     }
 
     public function all(Request $request) {
-        return response()->json($this->events->findAllAvailable(Auth::id(), Input::get('perPage')));
+        $events = $this->events->findAllAvailable(Auth::id())
+            ->paginate(Input::get('perPage', 25));
+        return response()->json($events);
     }
 
     public function mine(Request $request) {

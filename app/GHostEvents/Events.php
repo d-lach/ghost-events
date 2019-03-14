@@ -17,50 +17,29 @@ class Events
      * @param int|null $perPage
      * @return array|string
      */
-    function findAllAvailable(?int $userIdOrNulll, $perPage = null)
+    function findAllAvailable(?int $userIdOrNulll)
     {
-
-        if (!$perPage)
-            $perPage = 25;
-
         if ($userIdOrNulll === null)
             return Event::where(['private' => false]) // return public events
-                ->orderBy('starts_at', 'ASC')
-                ->paginate($perPage);
+                ->orderBy('starts_at', 'ASC');
 
-        $allPublic = DB::table('events')
+        $user = User::find($userIdOrNulll);
+
+        return $this->allPublicOpen()
+            ->union($user->toHostPrivate())
+            ->union($user->toAttendPrivate())
+            ->union($user->privateOpenInvitations())
+            ->orderBy('starts_at', 'ASC');
+    }
+
+    function allPublicOpen() {
+        return DB::table('events')
             ->where('private', '=', 0)
             ->whereRaw('starts_at > CURRENT_TIMESTAMP()')
             ->whereRaw('closes_at > CURRENT_TIMESTAMP()');
-
-        $buildUserRelatedEventsQuery = function($table) use ($userIdOrNulll) {
-            return DB::table('events')
-                ->select('events.*')
-                ->join($table, function ($join) use($table, $userIdOrNulll) {
-                    $join->on('events.id', '=', $table . '.event_id')
-                        ->where($table . '.user_id', '=', $userIdOrNulll);
-                })
-                ->where('events.private', '=', true)
-                ->whereRaw('events.starts_at > CURRENT_TIMESTAMP()')
-                ->whereRaw('events.closes_at > CURRENT_TIMESTAMP()');
-        };
-
-        $hostedByUser =  $buildUserRelatedEventsQuery('events_hosts');
-        $userIsGuest =  $buildUserRelatedEventsQuery('events_guests');
-        $userIsInvited =  $buildUserRelatedEventsQuery('events_invitations');
-
-
-        return $allPublic
-            ->union($hostedByUser)
-            ->union($userIsGuest)
-            ->union($userIsInvited)
-            ->orderBy('starts_at', 'ASC')
-            ->paginate($perPage);
-           // ->get()->toArray();
-
     }
 
-    function getAllOf(int $userId)
+    function getAllHostedBy(int $userId)
     {
         return User::find($userId)->hosted()->get();
     }
@@ -108,7 +87,6 @@ class Events
 
         $event->removeInvitation($userId);
         $event->addGuest($userId);
-        return true;
     }
 
     function removeGuest(int $userId, $eventOrID)
