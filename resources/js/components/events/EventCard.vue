@@ -1,9 +1,11 @@
 <template>
     <div class="wrapper">
-        <div class="abstract">
+        <div class="card">
             <div class="card-header">{{ event.name }}</div>
             <div class="card-body">
-                {{ event.description }}
+                <div class="description">
+                    {{ event.description }}
+                </div>
             </div>
         </div>
     </div>
@@ -26,9 +28,13 @@
         margin: 1em;
     }
 
-    .abstract {
-        max-width: 450px;
-        width: 25vh;
+    .card {
+        max-width: 700px;
+        width: 50vh;
         height: 65vh;
+    }
+
+    .card-body {
+
     }
 </style>
