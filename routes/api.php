@@ -22,56 +22,55 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 //Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
 
 Route::prefix('events')
-    ->middleware('auth:api')
     ->group(function () {
 
-        Route::post('',[
-            'as' => 'events.store',
-            'uses' => 'events\EventsApiController@store'
-        ]);
-
-        Route::get('mine',[
-            'as' => 'events.user',
-            'uses' => 'events\EventsApiController@mine'
-        ]);
-
-        Route::get('all',[
+        Route::get('all', [
             'as' => 'events.user',
             'uses' => 'events\EventsApiController@all'
         ]);
 
-        Route::put('{eventId}/update',[
-            'as' => 'events.update',
-            'uses' => 'events\EventsApiController@update'
-        ]);
+        Route::middleware('auth:api')
+            ->group(function () {
+                Route::post('', [
+                    'as' => 'events.store',
+                    'uses' => 'events\EventsApiController@store'
+                ]);
 
-        Route::delete('{eventId}/destroy',[
-            'as' => 'events.destroy',
-            'uses' => 'events\EventsApiController@destroy'
-        ]);
+                Route::get('mine', [
+                    'as' => 'events.user',
+                    'uses' => 'events\EventsApiController@mine'
+                ]);
 
-        Route::get('{eventId}/',[
-            'as' => 'events.show',
-            'uses' => 'events\EventsApiController@show'
-        ]);
+                Route::put('{eventId}/update', [
+                    'as' => 'events.update',
+                    'uses' => 'events\EventsApiController@update'
+                ]);
 
-        Route::post('{eventId}/join',[
-            'as' => 'events.join',
-            'uses' => 'events\EventsApiController@join'
-        ]);
+                Route::delete('{eventId}/destroy', [
+                    'as' => 'events.destroy',
+                    'uses' => 'events\EventsApiController@destroy'
+                ]);
 
-        Route::post('{eventId}/leave',[
-            'as' => 'events.leave',
-            'uses' => 'events\EventsApiController@leave'
-        ]);
+                Route::get('{eventId}/', [
+                    'as' => 'events.show',
+                    'uses' => 'events\EventsApiController@show'
+                ]);
 
-        Route::post('{eventId}/invite',[
-            'as' => 'events.invite',
-            'uses' => 'events\EventsApiController@invite'
-        ]);
+                Route::post('{eventId}/join', [
+                    'as' => 'events.join',
+                    'uses' => 'events\EventsApiController@join'
+                ]);
 
+                Route::post('{eventId}/leave', [
+                    'as' => 'events.leave',
+                    'uses' => 'events\EventsApiController@leave'
+                ]);
 
-
+                Route::post('{eventId}/invite', [
+                    'as' => 'events.invite',
+                    'uses' => 'events\EventsApiController@invite'
+                ]);
+            });
     });
 
 //Route::middleware('auth:api')
