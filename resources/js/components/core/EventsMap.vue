@@ -26,6 +26,7 @@
 
 <script>
     import EventCard from "../events/EventCard.vue";
+    import EventsService from "~/services/EventsService";
     import EventsMockup from "~/mockup/EventsMockup";
     import Geolocator from "~/Utilities/Geolocator";
 
@@ -42,10 +43,9 @@
             }
         },
         mounted() {
-            for (let i = 0; i < 10; i++) {
-                this.addEvent(EventsMockup.randomEvent);
-            }
-
+            EventsService.getAll().then((results) => {
+                this.events = results.map(this.setupMarker.bind(this));
+            });
             this.centerAtHome();
         },
         computed: {
@@ -68,12 +68,12 @@
 
                 this.activeEvent = null;
             },
-            addEvent(event) {
+            setupMarker(event) {
                 event.marker = {
                     id: this.lastId,
                     position: {
-                        lat: event.coordinates.latitude,
-                        lng: event.coordinates.langitude
+                        lat: event.latitude,
+                        lng: event.longitude
                     },
                     opacity: 1,
                     draggable: true,
@@ -84,8 +84,8 @@
                     ifw: false,
                     ifw2text: 'This text is bad please change me :( '
                 };
+                return event;
 
-                this.events.push(event);
             },
             setBaseLocationAt(x, y, z = 12) {
                 this.center = {lat: x, lng: y};

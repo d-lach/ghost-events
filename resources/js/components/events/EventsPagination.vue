@@ -10,7 +10,7 @@
 
 <script>
     import Pagination from "laravel-vue-pagination";
-    import EventsService from "~/Services/EventsService";
+    import EventsService from "~/services/EventsService";
 
     export default {
         props: ['data'],
