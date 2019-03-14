@@ -24,6 +24,11 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::prefix('events')
     ->group(function () {
 
+        Route::get('all/{page}', [
+            'as' => 'events.user',
+            'uses' => 'events\EventsApiController@allPaginated'
+        ]);
+
         Route::get('all', [
             'as' => 'events.user',
             'uses' => 'events\EventsApiController@all'

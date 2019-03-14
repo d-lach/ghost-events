@@ -2,13 +2,15 @@ import Api from './Api';
 
 export default {
 
-    getEventsFromSoonest(page = 1) {
-        return Api().get('events/all?page=', page);
+    getAll() {
+        return Api().get('events/all');
+    },
 
+    getEventsFromSoonest(page = 1) {
+        return Api().get('events/all/', page);
     },
 
     getEventsInProximity(geoCoords, range = 5) {
         throw new Error("not implemented");
-        //return Api().post('closed/cart/remove/' + id);
     }
 };

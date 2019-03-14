@@ -23,11 +23,19 @@ class EventsApiController extends Controller
         $this->events = $events;
     }
 
-    public function all(Request $request) {
+    public function allPaginated(Request $request, int $page) {
         $events = $this->events->findAllAvailable(Auth::user())
-            ->paginate(Input::get('perPage', 25));
+            ->paginate(Input::get('perPage', 25), ['*'], '', $page);
+        // $perPage = null, $columns = ['*'], $pageName = 'page', $page = null
         return response()->json($events);
     }
+
+    public function all(Request $request) {
+        $events = $this->events->findAllAvailable(Auth::user())->get();
+
+        return response()->json($events);
+    }
+
 
     public function mine(Request $request) {
         return response()->json($this->events->getAllOf(Auth::id()));
