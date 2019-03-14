@@ -13,28 +13,42 @@ class Events
 {
 
     /**
-     * @param int|null $userIdOrNulll
-     * @param int|null $perPage
+     * @param User|null $userOrNull
      * @return array|string
      */
-    function findAllAvailable(?int $userIdOrNulll)
+    function findAllAvailable(?User $userOrNull)
     {
-        if ($userIdOrNulll === null)
-            return Event::where(['private' => false]) // return public events
+        if ($userOrNull === null)
+            return $this->allWithNumberOfGuests()
+                ->where(['private' => false])
+                ->whereRaw('starts_at > CURRENT_TIMESTAMP()')
+                ->whereRaw('closes_at > CURRENT_TIMESTAMP()')// return public events
                 ->orderBy('starts_at', 'ASC');
 
-        $user = User::find($userIdOrNulll);
-
-        return $this->allPublicOpen()
-            ->union($user->toHostPrivate())
-            ->union($user->toAttendPrivate())
-            ->union($user->privateOpenInvitations())
+        return $this->allWithNumberOfGuests()
+            ->joinSub(
+                $this->allAvailableForUser($userOrNull),
+                'available',
+                'events.id', '=', 'available.id'
+            )
             ->orderBy('starts_at', 'ASC');
     }
 
+    function allAvailableForUser(User $user) {
+        return $this->allPublicOpen()
+            ->union($user->toHostPrivate())
+            ->union($user->toAttendPrivate())
+            ->union($user->privateOpenInvitations());
+    }
+
+    function allWithNumberOfGuests() {
+        return Event::select('events.*', DB::raw('count(events.id) as numberOfGuests'))
+            ->join('events_guests', 'events.id', '=', 'events_guests.event_id', 'left')
+            ->groupBy('events.id');
+    }
+
     function allPublicOpen() {
-        return DB::table('events')
-            ->where('private', '=', 0)
+        return Event::where('private', '=', 0)
             ->whereRaw('starts_at > CURRENT_TIMESTAMP()')
             ->whereRaw('closes_at > CURRENT_TIMESTAMP()');
     }

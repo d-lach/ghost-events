@@ -24,7 +24,7 @@ class EventsApiController extends Controller
     }
 
     public function all(Request $request) {
-        $events = $this->events->findAllAvailable(Auth::id())
+        $events = $this->events->findAllAvailable(Auth::user())
             ->paginate(Input::get('perPage', 25));
         return response()->json($events);
     }

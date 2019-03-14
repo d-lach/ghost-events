@@ -4,22 +4,30 @@ namespace App\Http\Controllers\events;
 
 use App\Events;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Input;
+use Illuminate\Support\Facades\Auth;
 
 class EventsController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
+
+    private $events = null;
+
     public function __construct(Events $events)
     {
-//        $this->middleware('auth');
+        $this->events = $events;
     }
 
     public function eventsList()
     {
-        return view('events.list');
+        $pagination = $this->events->findAllAvailable(Auth::user())
+            ->paginate(Input::get('perPage', 25));
+
+        $events = json_encode($pagination->toArray()['data']);
+
+        return view('events.list', [
+            'wholePaginationElement' => $pagination,
+            'events' => $events
+        ]);
     }
 
     public function eventsMap()
@@ -27,7 +35,8 @@ class EventsController extends Controller
         return view('events.map');
     }
 
-    public function event($id) {
+    public function event($id)
+    {
         return view('events.event');
     }
 }
