@@ -1,7 +1,7 @@
 <template>
 
-    <div class="card" style=";">
-        <div class="card-header">{{ event.name }}</div>
+    <div class="card">
+        <div class="card-header">{{ event.name }} {{ event.starts_at }}, {{ event.numberOfGuests }} / {{ event.maxGuests }} </div>
         <div class="card-body">
             {{ event.description }}
 

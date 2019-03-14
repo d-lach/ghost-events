@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper">
-        <div class="abstract" style=";">
+        <div class="abstract">
             <div class="card-header">{{ event.name }}</div>
             <div class="card-body">
                 {{ event.description }}
