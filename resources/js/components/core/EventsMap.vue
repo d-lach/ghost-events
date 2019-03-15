@@ -44,8 +44,9 @@
             }
         },
         mounted() {
-            EventsService.getAll().then((results) => {
-                this.events = results.map(this.setupMarker.bind(this));
+            EventsService.getAll().then(({data, success}) => {
+                if (success)
+                    this.events = data.map(this.setupMarker.bind(this));
             });
             this.centerAtHome();
         },

@@ -142,9 +142,10 @@ class EventsApiController extends Controller
         ];
 
         if ($strict) {
-            foreach ($rules as $conditions) {
+            $rules = array_map(function ($conditions) {
                 array_push($conditions, 'required');
-            }
+                    return $conditions;
+            }, $rules);
         }
 
         return Validator::make($data, $rules);

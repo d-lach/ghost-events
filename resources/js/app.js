@@ -13,9 +13,6 @@ window.Vue.use(VueGoogleMaps, {
 
 Vue.component('GmapCluster', GmapCluster);
 
-// import EventsPagination from "./components/events/EventsPagination.vue";
-// Vue.component("events-pagination", EventsPagination); //
-
 // automatically register components inside components/core
 const files = require.context('./components/core', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));

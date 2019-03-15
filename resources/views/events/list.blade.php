@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-
+        <passport-personal-access-tokens></passport-personal-access-tokens>
         <div class="row justify-content-center">
             {{$wholePaginationElement}}
             {{--<events-pagination :data="{{$wholePaginationElement->toJson()}}"></events-pagination>--}}

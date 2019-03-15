@@ -7,7 +7,7 @@ let serverConnection = () => {
     });
 
     connection.interceptors.response.use(res => {
-        return res.data;
+        return {data: res.data, success: true};
     }, verboseErrorHandler);
 
     return connection;
@@ -16,8 +16,8 @@ let serverConnection = () => {
 export default serverConnection;
 
 let verboseErrorHandler = (error) => {
-    let {response: {status, data: details}} = error;
-    console.log({error, status, details});
+    let {response: {status, data}} = error;
+    console.log({error, status, data});
 
-    return {error, success: false};
+    return {data, status, success: false};
 };

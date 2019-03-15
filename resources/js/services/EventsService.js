@@ -2,6 +2,13 @@ import Api from './Api';
 
 export default {
 
+    save(event) {
+        if (event.id)
+            return Api().put('events/' + event.id + "/update", event);
+
+        return Api().post('events', event);
+    },
+
     getAll() {
         return Api().get('events/all');
     },

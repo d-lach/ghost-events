@@ -5,8 +5,6 @@
             <div class="row">
                 <div class="col">
                     {{ event.name }}
-
-
                 </div>
                 <div class="col text-right">
                     <span class="number-of-guests">{{ event.numberOfGuests }}</span> /
@@ -22,7 +20,7 @@
             </div>
         </div>
         <div class="card-body">
-                    {{ event.description }}
+            {{ event.description }}
         </div>
     </div>
 </template>

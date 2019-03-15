@@ -31,8 +31,10 @@
         "jpegtran-bin": "^4.0.0",
         "laravel-vue-pagination": "^2.3.0",
         "marker-clusterer-plus": "^2.1.4",
+        "moment": "^2.24.0",
         "mozjpeg": "^6.0.1",
         "optipng-bin": "^5.1.0",
+        "vue2-datepicker": "^2.10.3",
         "vue2-google-maps": "^0.10.6",
         "vuelayers": "^0.11.2"
     }

@@ -35,8 +35,20 @@ class EventsController extends Controller
         return view('events.map');
     }
 
-    public function event($id)
+    public function getEvent($id)
     {
         return view('events.event');
     }
+
+
+    public function eventEdit($eventId)
+    {
+        return view('events.creator', $this->events->getFull($eventId));
+    }
+
+    public function eventNew()
+    {
+        return view('events.creator');
+    }
+
 }
