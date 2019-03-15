@@ -15,7 +15,7 @@
                 <div class="col">
                     <span v-if="daysToStart > 1">Starts in {{ daysToStart }} days</span>
                     <span v-else-if="daysToStart === 1"> Starts tomorrow</span>
-                    <span v-else> {{ timeToStart }} remains</span>
+                    <span v-else> {{ timeToStart }} till start</span>
                 </div>
             </div>
         </div>
@@ -26,18 +26,27 @@
 </template>
 
 <script>
+    import moment from 'moment';
+
     export default {
         props: ['event'],
         computed: {
             daysToStart() {
-                return Math.ceil(this.msToStart / (1000 * 3600 * 24));
+                return moment(this.event.starts_at, 'YYYY-MM-DD HH:mm').diff(moment(), 'days');
             },
             timeToStart() {
-                return new Date(this.msToStart).toISOString().slice(18, -1);
+                let remaining = moment.duration(moment(this.event.starts_at, 'YYYY-MM-DD HH:mm').diff(moment()));
+                if (remaining.hours() > 1)
+                    return "about " + remaining.hours() + " hours";
+                else if (remaining.hours() === 1) {
+                    return ">1 hour"
+                } else {
+                    return remaining.minutes() + " minutes";
+                }
             },
             msToStart() {
                 return Math.abs(Date.now() - Date.parse(this.event.starts_at));
-            }
+            },
         },
         mounted() {
         },

@@ -2,7 +2,7 @@
 
 @section('content')
     <div class="container">
-      <events-creator></events-creator>
+        <events-creator @if(isset($event)) :event="{{ json_encode($event) }}" @endif></events-creator>
     </div>
 @endsection
 
