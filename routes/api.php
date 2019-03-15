@@ -25,12 +25,12 @@ Route::prefix('events')
     ->group(function () {
 
         Route::get('all/{page}', [
-            'as' => 'events.user',
+            'as' => 'events.page',
             'uses' => 'events\EventsApiController@allPaginated'
         ]);
 
         Route::get('all', [
-            'as' => 'events.user',
+            'as' => 'events.allAvailable',
             'uses' => 'events\EventsApiController@all'
         ]);
 
@@ -42,7 +42,7 @@ Route::prefix('events')
                 ]);
 
                 Route::get('mine', [
-                    'as' => 'events.user',
+                    'as' => 'events.hostedByUser',
                     'uses' => 'events\EventsApiController@mine'
                 ]);
 

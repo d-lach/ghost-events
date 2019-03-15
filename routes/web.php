@@ -11,31 +11,42 @@
 |
 */
 
-
 Auth::routes();
-
-
-/*Route::get('/events/list', '');
-Route::get('/events/map', 'EventsController@eventsMap');*/
-
-
-Route::get('/events',[
-    'as' => 'events.list',
-    'uses' => 'events\EventsController@eventsList'
-]);
-
-Route::get('/events/map',[
-    'as' => 'events.map',
-    'uses' => 'events\EventsController@eventsMap'
-]);
 
 Route::get('/', function () {
     return redirect()->route('events.list');
 });
 
 Route::get('/home', 'HomeController@index')->name('home');
-// middleware('auth')->
 
+Route::prefix('events')
+    ->group(function () {
+        Route::get('', [
+            'as' => 'events.list',
+            'uses' => 'events\EventsController@eventsList'
+        ]);
 
-//Route::post('/events2', 'events\EventsApiController@store');
+        Route::get('map', [
+            'as' => 'events.map',
+            'uses' => 'events\EventsController@eventsMap'
+        ]);
+
+        Route::middleware('auth')
+            ->group(function() {
+                Route::get('new', [
+                    'as' => 'events.creator',
+                    'uses' => 'events\EventsController@eventNew'
+                ]);
+
+                Route::get('{eventId}/edit', [
+                    'as' => 'events.editor',
+                    'uses' => 'events\EventsController@eventEdit'
+                ]);
+            });
+
+        Route::get('{eventId}', [
+            'as' => 'events.fullPage',
+            'uses' => 'events\EventsController@getEvent'
+        ]);
+    });
 
