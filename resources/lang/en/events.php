@@ -13,6 +13,11 @@ return [
     |
     */
 
-    'menu' => 'View',
+    'views' => 'View',
+    'menu' => 'My events',
+    'list' => "List",
+    'map' => "Map",
+    'my_events' => "Hosted",
+    'new_event' => "Add event"
 
 ];

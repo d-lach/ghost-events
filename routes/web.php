@@ -33,10 +33,16 @@ Route::prefix('events')
 
         Route::middleware('auth')
             ->group(function() {
+                Route::get('mine', [
+                    'as' => 'events.userEvents',
+                    'uses' => 'events\EventsController@eventNew'
+                ]);
+
                 Route::get('new', [
                     'as' => 'events.creator',
                     'uses' => 'events\EventsController@eventNew'
                 ]);
+
 
                 Route::get('{eventId}/edit', [
                     'as' => 'events.editor',
