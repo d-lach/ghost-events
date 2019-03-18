@@ -35,14 +35,18 @@ Route::prefix('events')
             ->group(function() {
                 Route::get('mine', [
                     'as' => 'events.userEvents',
-                    'uses' => 'events\EventsController@eventNew'
+                    'uses' => 'events\EventsController@userEvents'
+                ]);
+
+                Route::get('attend', [
+                    'as' => 'events.userAsGuestEvents',
+                    'uses' => 'events\EventsController@userAsGuestEvents'
                 ]);
 
                 Route::get('new', [
                     'as' => 'events.creator',
                     'uses' => 'events\EventsController@eventNew'
                 ]);
-
 
                 Route::get('{eventId}/edit', [
                     'as' => 'events.editor',

@@ -34,28 +34,61 @@ class Events
             ->orderBy('starts_at', 'ASC');
     }
 
-    function allAvailableForUser(User $user) {
+    function allAvailableForUser(User $user)
+    {
         return $this->allPublicOpen()
             ->union($user->toHostPrivate())
             ->union($user->toAttendPrivate())
             ->union($user->privateOpenInvitations());
     }
 
-    function allWithNumberOfGuests() {
+    function allWithNumberOfGuests()
+    {
         return Event::select('events.*', DB::raw('count(events.id) as numberOfGuests'))
             ->join('events_guests', 'events.id', '=', 'events_guests.event_id', 'left')
             ->groupBy('events.id');
     }
 
-    function allPublicOpen() {
+    function allPublicOpen()
+    {
         return Event::where('private', '=', 0)
             ->whereRaw('starts_at > CURRENT_TIMESTAMP()')
             ->whereRaw('closes_at > CURRENT_TIMESTAMP()');
     }
 
+    function hostedByUserIds($user)
+    {
+        return $user->hostedIds();
+    }
+
+    function attendedByUserIds($user)
+    {
+        return $user->attendedIds();
+    }
+
+    private function retrivingId()
+    {
+        return function ($event) {
+            return $event->event_id;
+        };
+    }
+
     function getAllHostedBy(int $userId)
     {
-        return User::find($userId)->hosted()->get();
+        return $this->allWithNumberOfGuests()
+            ->join('events_hosts', function ($join) use ($userId) {
+                $join->on('events.id', '=', 'events_hosts.event_id');
+                $join->where('events_hosts.user_id', '=', $userId);
+            });
+    }
+
+    function getAllAttended(int $userId)
+    {
+        return $this->allWithNumberOfGuests()
+            ->join('events_guests as eg', function ($join) use ($userId) {
+                $join->on('events.id', '=', 'eg.event_id');
+                $join->where('eg.user_id', '=', $userId);
+            });
     }
 
     function create(int $userId, array $eventData)
@@ -92,13 +125,6 @@ class Events
     function setAsGuest(int $userId, $eventOrId)
     {
         $event = $this->_retrieveEvent($eventOrId);
-
-        // user cannot join private event without invitation
-        if ($event->private && !($event->isInvited($userId))) {
-            throw new PrivateEventException();
-        }
-
-
         $event->removeInvitation($userId);
         $event->addGuest($userId);
     }
@@ -106,8 +132,6 @@ class Events
     function removeGuest(int $userId, $eventOrID)
     {
         $event = $this->_retrieveEvent($eventOrID);
-
-
         $event->removeGuest($userId);
     }
 

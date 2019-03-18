@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\events;
 
+use App\Event;
 use App\Events;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
@@ -23,22 +24,33 @@ class EventsApiController extends Controller
         $this->events = $events;
     }
 
-    public function allPaginated(Request $request, int $page) {
+    public function allPaginated(Request $request, int $page)
+    {
         $events = $this->events->findAllAvailable(Auth::user())
             ->paginate(Input::get('perPage', 25), ['*'], '', $page);
-        // $perPage = null, $columns = ['*'], $pageName = 'page', $page = null
+
         return response()->json($events);
     }
 
-    public function all(Request $request) {
+    public function all(Request $request)
+    {
         $events = $this->events->findAllAvailable(Auth::user())->get();
 
         return response()->json($events);
     }
 
+    public function mine(Request $request)
+    {
+        $events = $this->events->getAllHostedBy(Auth::id())->get();
+        return response()->json($events);
+    }
 
-    public function mine(Request $request) {
-        return response()->json($this->events->getAllOf(Auth::id()));
+    public function getIdsOfUserEvents(Request $request)
+    {
+        return response()->json([
+            "hosted" => Auth::user()->hostedIds(),
+            "attended" => Auth::user()->attendedIds()
+        ]);
     }
 
     /**
@@ -54,17 +66,20 @@ class EventsApiController extends Controller
         return $event;
     }
 
-    public function join(int $eventId) {
-        $success = $this->events->setAsGuest(Auth::id(), $eventId);
-       // if (!$success)
-       //     return response()->json(["error" => "event is private"]);
+    public function join(int $eventId)
+    {
+        $this->authorize('join', Event::find($eventId));
+        $this->events->setAsGuest(Auth::id(), $eventId);
     }
 
-    public function leave(int $eventId) {
+    public function leave(int $eventId)
+    {
         $this->events->removeGuest(Auth::id(), $eventId);
     }
 
-    public function invite(Request $request, int $eventId) {
+    public function invite(Request $request, int $eventId)
+    {
+        $this->authorize('invite', Event::find($eventId));
         foreach ($request->post('usersIds') as $userId) {
             $this->events->invite($userId, $eventId);
         }
@@ -73,37 +88,29 @@ class EventsApiController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $id
+     * @param  int $eventId
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show($eventId)
     {
-        // return response()->json(["e" => $this->events->getFull($id), "u" => Auth::user()]);
-        return response()->json($this->events->getFull($id));
+        $this->authorize('access', Event::find($eventId));
+        return response()->json($this->events->getFull($eventId));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
-     * @param  int $id
+     * @param  int $eventId
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, int $id)
+    public function update(Request $request, int $eventId)
     {
+        $this->authorize('edit', Event::find($eventId));
+
         $validator = $this->eventValidator($request->all(), false);
-        $event = $this->events->update($id, $validator->validate());
+        $event = $this->events->update($eventId, $validator->validate());
 
         return $event;
     }
@@ -111,12 +118,12 @@ class EventsApiController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $id
+     * @param  int $eventId
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($eventId)
     {
-        //
+        $this->authorize('edit', Event::find($eventId));
     }
 
     /**
@@ -144,7 +151,7 @@ class EventsApiController extends Controller
         if ($strict) {
             $rules = array_map(function ($conditions) {
                 array_push($conditions, 'required');
-                    return $conditions;
+                return $conditions;
             }, $rules);
         }
 

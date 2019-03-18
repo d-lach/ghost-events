@@ -2,6 +2,11 @@ require('./bootstrap');
 
 import * as VueGoogleMaps from 'vue2-google-maps'
 import GmapCluster from 'vue2-google-maps/dist/components/cluster';
+import BootstrapVue from 'bootstrap-vue';
+import Formatting from '~/Utilities/Formatting';
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-vue/dist/bootstrap-vue.css';
 
 window.Vue = require('vue');
 
@@ -11,7 +16,14 @@ window.Vue.use(VueGoogleMaps, {
     }
 });
 
+Vue.filter('standardDate', Formatting.relativeDate);
+Vue.filter('text', Formatting.sentenceCase);
+Vue.filter('name', Formatting.titleCase);
+
+Vue.use(BootstrapVue);
 Vue.component('GmapCluster', GmapCluster);
+
+Vue.prototype.$getUserId = () => document.querySelector("meta[name='user-id']").getAttribute('content');
 
 // automatically register components inside components/core
 const files = require.context('./components/core', true, /\.vue$/i);

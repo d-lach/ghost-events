@@ -20,7 +20,7 @@
             </div>
         </div>
         <div class="card-body">
-            {{ event.description }}
+            {{ event.description | text }}
         </div>
     </div>
 </template>

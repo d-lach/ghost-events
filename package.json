@@ -24,6 +24,7 @@
         "vue-template-compiler": "^2.6.8"
     },
     "dependencies": {
+        "bootstrap-vue": "^2.0.0-rc.15",
         "copy-webpack-plugin": "^5.0.0",
         "geolocator": "^2.1.5",
         "imagemin-mozjpeg": "^8.0.0",

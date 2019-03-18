@@ -4,8 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Query\Builder as QBuilder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -44,6 +47,10 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Event', 'events_hosts');
     }
 
+    function hostedIds(): Collection {
+        return $this->hosted()->pluck('event_id');
+    }
+
     function toHost(): BelongsToMany
     {
         return $this->hosted()
@@ -60,6 +67,10 @@ class User extends Authenticatable
     function attended(): BelongsToMany
     {
         return $this->belongsToMany('App\Event', 'events_guests');
+    }
+
+    function attendedIds(): Collection {
+        return $this->attended()->pluck('event_id');
     }
 
     function toAttend(): BelongsToMany

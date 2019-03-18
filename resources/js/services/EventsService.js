@@ -19,5 +19,17 @@ export default {
 
     getEventsInProximity(geoCoords, range = 5) {
         throw new Error("not implemented");
+    },
+
+    getUserEventsIds() {
+        return Api().get('events/all-mine-ids');
+    },
+
+    leave(eventId) {
+        return Api().post('events/' + eventId + "/leave");
+    },
+
+    join(eventId) {
+        return Api().post('events/' + eventId + "/join")
     }
 };

@@ -29,6 +29,7 @@
                     </a>
                     <div class="dropdown-menu" aria-labelledby="user-menu">
                         <a class="dropdown-item" href="{{ route('events.userEvents') }}">{{__('events.my_events')}}</a> {{----}}
+                        <a class="dropdown-item" href="{{ route('events.userAsGuestEvents') }}">{{__('events.attended_events')}}</a> {{----}}
                         <a class="dropdown-item" href="{{ route('events.creator') }}">{{__('events.new_event')}}</a> {{----}}
                     </div>
                 </li>

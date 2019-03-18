@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\events;
 
+use App\Event;
 use App\Events;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
@@ -40,15 +41,26 @@ class EventsController extends Controller
         return view('events.event');
     }
 
-
     public function eventEdit($eventId)
     {
+        $this->authorize('edit', Event::find($eventId));
         return view('events.creator', $this->events->getFull($eventId));
     }
 
     public function eventNew()
     {
         return view('events.creator');
+    }
+
+    public function userEvents()
+    {
+        return view('events.user-events', ["events" => $this->events->getAllHostedBy(Auth::id())->get()]);
+    }
+
+    public function userAsGuestEvents()
+    {
+        return view('events.user-events', ["events" => $this->events->getAllAttended(Auth::id())->get()]);
+
     }
 
 }

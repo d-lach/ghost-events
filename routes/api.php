@@ -46,6 +46,11 @@ Route::prefix('events')
                     'uses' => 'events\EventsApiController@mine'
                 ]);
 
+                Route::get("all-mine-ids",[
+                    'as' => 'events.userEventsIds',
+                    'uses' => 'events\EventsApiController@getIdsOfUserEvents'
+                ]);
+
                 Route::put('{eventId}/update', [
                     'as' => 'events.update',
                     'uses' => 'events\EventsApiController@update'
