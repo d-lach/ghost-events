@@ -20,6 +20,7 @@ Vue.filter('standardDate', Formatting.relativeDate);
 Vue.filter('text', Formatting.sentenceCase);
 Vue.filter('name', Formatting.titleCase);
 Vue.filter('gender', Formatting.fullGender);
+Vue.filter('amount', Formatting.twoDecimals);
 
 Vue.use(BootstrapVue);
 Vue.component('GmapCluster', GmapCluster);

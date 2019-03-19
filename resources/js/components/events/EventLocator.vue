@@ -1,22 +1,17 @@
 <template>
-    <div class="d-flex flex-grow-1">
-        <event-window v-if="anyActive" :event="activeEvent"></event-window>
+    <div class="map-wrapper">
+        {{ event.id ? event.id : "New" }}: ({{ position.lat | amount }}, {{ position.lng | amount }})
+
         <GmapMap
                 :center="center"
                 :zoom="zoom"
                 :map-type-id="mapType"
-                style="width: 100%; height: 100%"
-        >
-            <GmapCluster>
-                <gmap-marker v-if="event.marker.enabled"
-                             :position="event.marker.position"
-                             :opacity="event.marker.opacity"
-                             :draggable="event.marker.draggable"
-                             @click="openEvent(event)"
-                             v-for="event in events"
-                             :key="event.id">
-                </gmap-marker>
-            </GmapCluster>
+                style="width: 100%; height: 100%">
+            <gmap-marker :position="position"
+                         :draggable="true"
+                         @position_changed="updatePosition"
+                         @dragend="updateAddress">
+            </gmap-marker>
         </GmapMap>
     </div>
 
@@ -31,43 +26,38 @@
     import Geolocator from "~/Utilities/Geolocator";
 
     export default {
+        props: ['event'],
         data() {
             return {
                 activeEvent: null,
                 events: [],
                 zoom: 6,
-                center: {lat: 52.231838, lng: 21.0038063},
+                position: {lat: 52.231838, lng: 21.0038063},
                 rotation: 0,
                 geolocPosition: undefined,
                 mapType: "roadmap",
+                center: {lat: 52.231838, lng: 21.0038063},
             }
         },
         mounted() {
-            EventsService.getAll().then(({data, success}) => {
-                if (success)
-                    this.events = data.map(this.setupMarker.bind(this));
-            });
+            this.setupMarker(this.event);
+            console.log(this.event);
             this.centerAtHome();
         },
-        computed: {
-            anyActive() {
-                return this.activeEvent !== null;
-            }
-        },
+        computed: {},
         methods: {
-            openEvent(event) {
-                if (this.activeEvent && this.activeEvent.id === event.id) {
-                    return;
-                }
-                this.closeActiveEvent();
-
-                this.activeEvent = event;
+            updatePosition(event) {
+                this.position.lat = event.lat();
+                this.position.lng = event.lng();
             },
-            closeActiveEvent() {
-                if (!this.activeEvent)
-                    return;
-
-                this.activeEvent = null;
+            updateAddress(event) {
+                console.log(event.latLng.lat(), ",", event.latLng.lng());
+                Geolocator.geocdeToAddress({lat: event.latLng.lat(), lng: event.latLng.lng()})
+                    .then((address) => {
+                        console.log("ok:", address);
+                    }).catch((err) => {
+                    console.log("nope:", err);
+                });
             },
             setupMarker(event) {
                 event.marker = {
@@ -121,4 +111,9 @@
 
 <style scoped>
 
+    .map-wrapper {
+        margin: 0 !important;
+        width: 100%;
+        height: 10em;
+    }
 </style>

@@ -50,4 +50,8 @@ export default class Formatting {
         } else
             return "Another"
     }
+
+    static twoDecimals(number) {
+        return Math.round(number * 100) / 100
+    }
 }
