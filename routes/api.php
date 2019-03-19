@@ -46,7 +46,7 @@ Route::prefix('events')
                     'uses' => 'events\EventsApiController@mine'
                 ]);
 
-                Route::get("all-mine-ids",[
+                Route::get("all-mine-ids", [
                     'as' => 'events.userEventsIds',
                     'uses' => 'events\EventsApiController@getIdsOfUserEvents'
                 ]);
@@ -80,6 +80,17 @@ Route::prefix('events')
                     'as' => 'events.invite',
                     'uses' => 'events\EventsApiController@invite'
                 ]);
+
+                Route::post('{eventId}/guests/add', [
+                    'as' => 'events.invite',
+                    'uses' => 'events\EventsApiController@addGuest'
+                ]);
+
+                Route::post('{eventId}/guests/remove', [
+                    'as' => 'events.invite',
+                    'uses' => 'events\EventsApiController@removeGuest'
+                ]);
+
             });
     });
 

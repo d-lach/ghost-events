@@ -41,4 +41,13 @@ export default class Formatting {
     static titleCase(theString) {
         return _.startCase(theString);
     }
+
+    static fullGender(genderShortcut) {
+        if (genderShortcut === 1 || genderShortcut === 'M')
+            return "Mele";
+        else if (genderShortcut === 0 || genderShortcut === 'F') {
+            return "Female";
+        } else
+            return "Another"
+    }
 }

@@ -19,6 +19,7 @@ window.Vue.use(VueGoogleMaps, {
 Vue.filter('standardDate', Formatting.relativeDate);
 Vue.filter('text', Formatting.sentenceCase);
 Vue.filter('name', Formatting.titleCase);
+Vue.filter('gender', Formatting.fullGender);
 
 Vue.use(BootstrapVue);
 Vue.component('GmapCluster', GmapCluster);

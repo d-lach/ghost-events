@@ -85,6 +85,26 @@ class EventsApiController extends Controller
         }
     }
 
+    public function addGuest(Request $request, int $eventId)
+    {
+//        print ("going to add guest #". $request->post('userId') . " as user #" . Auth::id());
+        $this->authorize('edit', Event::find($eventId));
+        $this->events->setAsGuest($request->post('userId'), $eventId);
+        /*foreach ($request->post('usersIds') as $userId) {
+            $this->events->invite($userId, $eventId);
+        }*/
+    }
+
+    public function removeGuest(Request $request, int $eventId)
+    {
+        $this->authorize('edit', Event::find($eventId));
+        $this->events->removeGuest($request->post('userId'), $eventId);
+       /* $this->events-> $request->post('userId')
+        foreach  as $userId) {
+            $this->events->invite($userId, $eventId);
+        }*/
+    }
+
     /**
      * Display the specified resource.
      *

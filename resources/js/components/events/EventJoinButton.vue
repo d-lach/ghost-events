@@ -1,11 +1,11 @@
 <template>
     <span v-if="" class="join-button">
         <button v-if="!isGuest" :disabled="canJoin" @click="join()" type="button" class="btn btn-success">
-            <b-spinner v-if="event.canJoinLoading" small type="grow"></b-spinner>
+            <b-spinner v-if="canJoinLoading" small type="grow"></b-spinner>
             Join
         </button>
-        <button v-else @click="leave()" type="button" class="btn btn-danger">
-            <b-spinner v-if="event.canJoinLoading" small type="grow"></b-spinner>
+        <button v-else @click="leave()" type="button" class="btn btn-outline-danger">
+            <b-spinner v-if="canJoinLoading" small type="grow"></b-spinner>
             Leave
         </button>
     </span>
@@ -55,17 +55,17 @@
                 if (this.hasMaxGuests)
                     return;
 
-                this.event.canJoinLoading = true;
+                this.canJoinLoading = true;
                 EventsService.join(this.event.id).then(({success}) => {
                     if (success)
                         this.guests.push(User.id);
 
-                    this.event.canJoinLoading = false;
+                    this.canJoinLoading = false;
                     this.$emit("joined");
                 })
             },
             leave () {
-                this.event.canJoinLoading = true;
+                this.canJoinLoading = true;
 
                 EventsService.leave(this.event.id).then(({success}) => {
                     if (success) {
@@ -75,7 +75,7 @@
                             this.guests.splice(guestIndex, 1);
                     }
 
-                    this.event.canJoinLoading = false;
+                    this.canJoinLoading = false;
                     this.$emit("left");
                 });
             },

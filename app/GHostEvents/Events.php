@@ -135,7 +135,6 @@ class Events
         $event->invite($userId);
     }
 
-
     function getFull($eventOrId)
     {
         $event = $this->_retrieveEvent($eventOrId);

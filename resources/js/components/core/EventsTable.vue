@@ -17,7 +17,7 @@
                 {{ data.item.numberOfGuests }} / {{ data.item.maxGuests }}
             </template>
             <template slot="controls" slot-scope="data">
-                <button v-if="data.item.canEdit" @click="edit(data.item.id)" type="button" class="btn btn-info">Edit
+                <button v-if="canEdit(data.item)" @click="edit(data.item.id)" type="button" class="btn btn-info">Edit
                 </button>
                 <event-join-button :event="data.item"></event-join-button>
             </template>
@@ -30,6 +30,7 @@
     import Formatter from "~/Utilities/Formatting";
     import EventJoinButton from "../events/EventJoinButton.vue";
     import EventsService from "~/services/EventsService";
+    import User from "~/User";
 
     export default {
         props: ['events'],
@@ -97,6 +98,9 @@
                         numeric: true
                     })
                 }
+            },
+            canEdit(event) {
+                return event.host === User.id;
             },
             edit(eventId) {
                 window.location.href = '/events/' + eventId + '/edit';

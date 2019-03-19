@@ -2,7 +2,7 @@
     <div class="event-form">
         <div class="row justify-content-center">
             <div class="subpage-header h2">
-                {{ event.id ? "Edit" : "Create" }} Event
+                {{ isInEditorMode ? "Edit" : "Create" }} Event
             </div>
         </div>
         <div class="row justify-content-center">
@@ -79,7 +79,11 @@
                            v-model="event.private"/>
                     <div v-if="errors && errors.private" class="text-danger">{{ errors.private[0] }}</div>
                 </div>
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button type="submit" class="btn btn-primary">{{ isInEditorMode ? "update" : "save" }}</button>
+
+                <div v-if="isInEditorMode" class="guests-controller-wrapper">
+                    <guests-controller :event="event" :guests="guests"></guests-controller>
+                </div>
             </form>
         </div>
     </div>
@@ -88,6 +92,7 @@
 
 <script>
     import EventsService from '~/services/EventsService';
+    import GuestsController from "../events/GuestsController.vue";
     import DatePicker from 'vue2-datepicker';
     import moment from 'moment';
 
@@ -103,6 +108,11 @@
                         longitude: 21.0038063,
                         private: false,
                     };
+                }
+            },
+            guests: {
+                default: function() {
+                    return []
                 }
             }
         },
@@ -145,32 +155,14 @@
             }
         },
         computed: {
-            /* duration: {
-             get: function () {
-             return [new Date(this.event.starts_at), new Date(this.event.ends_at)];
-             },
-             set: function (range) {
-             this.event.starts_at = moment(range[0]).format(this.dateTimeFormat);
-             this.event.ends_at = moment(range[1]).format(this.dateTimeFormat); //new Date(range[1]);
-             this.$forceUpdate();
-             }
-             },
-             openTill: {
-             get: function () {
-             return new Date(this.event.closes_at);
-             },
-             set: function (range) {
-             this.event.closes_at = moment(range).format(this.dateTimeFormat);
-             }
-             }*/
+            isInEditorMode() {
+                return !!this.event.id;
+            }
         },
         mounted() {
             this.startsAtObj = this.event.starts_at ? new Date(this.event.starts_at) : null;
             this.endsAtObj = this.event.ends_at ? new Date(this.event.ends_at) : null;
             this.openTill = this.event.closes_at ? new Date(this.event.closes_at) : null;
-//            this.endsAtObj =  new Date(this.event.ends_at);
-//            console.log(this.endsAtObj);
-//            this.openTill = new Date(this.event.closes_at);
             this.duration.push(this.startsAtObj, this.endsAtObj);
         },
         methods: {
@@ -195,13 +187,12 @@
                             return;
                         }
 
-//                        this.event = {}; //Clear input fields.
                     });
                 }
             },
         },
         components: {
-            DatePicker
+            DatePicker, GuestsController
         }
     }
 </script>

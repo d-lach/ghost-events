@@ -31,5 +31,14 @@ export default {
 
     join(eventId) {
         return Api().post('events/' + eventId + "/join")
+    },
+
+    addGuest(eventId, userId) {
+        return Api().post('events/' + eventId + "/guests/add", {userId})
+
+    },
+
+    removeGuest(eventId, userId) {
+        return Api().post('events/' + eventId + "/guests/remove", {userId})
     }
 };
