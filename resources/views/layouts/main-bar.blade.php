@@ -28,16 +28,21 @@
                         {{ __('events.menu') }}
                     </a>
                     <div class="dropdown-menu" aria-labelledby="user-menu">
-                        <a class="dropdown-item" href="{{ route('events.userEvents') }}">{{__('events.my_events')}}</a> {{----}}
-                        <a class="dropdown-item" href="{{ route('events.userAsGuestEvents') }}">{{__('events.attended_events')}}</a> {{----}}
-                        <a class="dropdown-item" href="{{ route('events.creator') }}">{{__('events.new_event')}}</a> {{----}}
+                        <a class="dropdown-item" href="{{ route('events.userEvents') }}">{{__('events.my_events')}}</a>
+                        <a class="dropdown-item"
+                           href="{{ route('events.userAsGuestEvents') }}">{{__('events.attended_events')}}</a>
+                        {{--<a class="dropdown-item" href="{{ route('events.creator') }}">{{__('events.new_event')}}</a>--}}
                     </div>
+                </li>
+                <li class="nav-item">
+
+                    <a class="nav-link" href="{{ route('events.creator') }}">{{__('events.new_event')}} <i class="fas fa-plus"></i></a>
                 </li>
                 @endauth
             </ul>
 
 
-        <!-- Right Side Of Navbar -->
+            <!-- Right Side Of Navbar -->
             <ul class="navbar-nav ml-auto">
                 <!-- Authentication Links -->
                 @guest

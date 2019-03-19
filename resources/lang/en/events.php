@@ -19,6 +19,6 @@ return [
     'map' => "Map",
     'my_events' => "Hosted",
     "attended_events" => "Attended",
-    'new_event' => "Add event",
+    'new_event' => "Add",
 
 ];
