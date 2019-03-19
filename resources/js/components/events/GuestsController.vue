@@ -1,27 +1,32 @@
 <template>
-    <div>
-        <b-table responsive striped hover
-                 :items="guests"
-                 :fields="fields">
-            <template slot="full-name" slot-scope="data">
-                {{ data.item.name | name }}
-
-
-            </template>
-
-            <template slot="gender" slot-scope="data">
-                {{ data.item.gender | gender }}
-            </template>
-            <template slot="age" slot-scope="data">
-                {{ data.item.age}}
-            </template>
-            <template slot="controls" slot-scope="data">
-                <button v-if="isGuest(data.item)" :disabled="reachedGuestsLimit" @click="add(data.item)" type="button" class="btn btn-success">Add
-                </button>
-                <button v-else @click="remove(data.item)" type="button" class="btn btn-outline-danger">Remove
-                </button>
-            </template>
-        </b-table>
+    <div class="col">
+        <div class="row align-content-center">
+            Guests
+        </div>
+        <div class="row">
+            <b-table responsive striped hover
+                     :items="guests"
+                     :fields="fields">
+                <template slot="full-name" slot-scope="data">
+                    {{ data.item.name | name }}
+                </template>
+                <template slot="gender" slot-scope="data">
+                    {{ data.item.gender | gender }}
+                </template>
+                <template slot="age" slot-scope="data">
+                    {{ data.item.age}}
+                </template>
+                <template slot="controls" slot-scope="data">
+                    <button v-if="isGuest(data.item)" :disabled="reachedGuestsLimit" @click="add(data.item)"
+                            type="button" class="btn btn-success">
+                        Add
+                    </button>
+                    <button v-else @click="remove(data.item)" type="button" class="btn btn-outline-danger">
+                        Remove
+                    </button>
+                </template>
+            </b-table>
+        </div>
     </div>
 </template>
 
@@ -60,9 +65,9 @@
             }
         },
         computed: {
-          reachedGuestsLimit() {
-              return this.currentGuests.length >= this.event.maxGuests;
-          }
+            reachedGuestsLimit() {
+                return this.currentGuests.length >= this.event.maxGuests;
+            }
         },
         mounted() {
         },
@@ -73,13 +78,13 @@
             },
             add(user) {
                 this.currentGuests.push(user.id);
-                user._rowVariant= '';
+                user._rowVariant = '';
                 EventsService.addGuest(this.event.id, user.id);
             },
             remove(user) {
                 console.log("going to remove", user.id);
                 let userIndex = this.currentGuests.indexOf(user.id);
-                user._rowVariant= 'danger';
+                user._rowVariant = 'danger';
                 if (userIndex < 0)
                     return;
 
@@ -88,7 +93,6 @@
             }
         },
 
-        components: {
-        },
+        components: {},
     }
 </script>

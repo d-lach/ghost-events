@@ -1,7 +1,8 @@
 <template>
     <div class="map-wrapper">
-        {{ event.id ? event.id : "New" }}: ({{ position.lat | amount }}, {{ position.lng | amount }})
-
+        <div class="debug">
+            {{ event.id ? event.id : "New" }}: ({{ position.lat | amount }}, {{ position.lng | amount }})
+        </div>
         <GmapMap
                 :center="center"
                 :zoom="zoom"
@@ -111,9 +112,12 @@
 
 <style scoped>
 
+    .debug {
+        position:absolute;
+        z-index: 1001;
+    }
     .map-wrapper {
         margin: 0 !important;
         width: 100%;
-        height: 10em;
     }
 </style>
