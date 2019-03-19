@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\Exceptions\PrivateEventException;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -11,7 +10,6 @@ use Illuminate\Support\Facades\DB;
  */
 class Events
 {
-
     /**
      * @param User|null $userOrNull
      * @return array|string
@@ -64,13 +62,6 @@ class Events
     function attendedByUserIds($user)
     {
         return $user->attendedIds();
-    }
-
-    private function retrivingId()
-    {
-        return function ($event) {
-            return $event->event_id;
-        };
     }
 
     function getAllHostedBy(int $userId)

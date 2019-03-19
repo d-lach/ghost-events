@@ -16,6 +16,12 @@ class Event extends Model
         'private' => false,
     ];
 
+    protected $appends = [
+        'host',
+        'guests'
+
+    ];
+
     function guests()
     {
         return $this->belongsToMany('App\User', 'events_guests');
@@ -31,6 +37,16 @@ class Event extends Model
         return $this->belongsToMany('App\User', 'events_invitations');
     }
 
+    function getHostAttribute()
+    {
+        return $this->host()->id;
+    }
+
+    function getGuestsAttribute()
+    {
+        return $this->guests()->pluck('user_id');
+    }
+
     function addHost(int $userId)
     {
         DB::table('events_hosts')->insert(
@@ -40,16 +56,13 @@ class Event extends Model
 
     function hasGuest(int $userId)
     {
-        /* $isUserGuest = DB::table('events_guests')
-             ->where('user_id', '=', $userId)
-             ->where('event_id', '=', $eventId)
-             ->exists();*/
         return $this->guests()
             ->where(['user_id' => $userId])
             ->exists();
     }
 
-    function isInvited(int $userId) {
+    function isInvited(int $userId)
+    {
         return $this->invited()
             ->where(['user_id' => $userId])
             ->exists();
@@ -62,7 +75,8 @@ class Event extends Model
         );
     }
 
-    function removeGuest(int $userId) {
+    function removeGuest(int $userId)
+    {
         DB::table('events_guests')
             ->where(['event_id' => $this->id, 'user_id' => $userId])
             ->delete();

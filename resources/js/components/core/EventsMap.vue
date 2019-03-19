@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-grow-1">
-        <event-card v-if="anyActive" :event="activeEvent"></event-card>
+        <event-window v-if="anyActive" :event="activeEvent"></event-window>
         <GmapMap
                 :center="center"
                 :zoom="zoom"
@@ -26,9 +26,8 @@
 </template>
 
 <script>
-    import EventCard from "../events/EventCard.vue";
+    import EventWindow from "../events/EventWindow.vue";
     import EventsService from "~/services/EventsService";
-    import EventsMockup from "~/mockup/EventsMockup";
     import Geolocator from "~/Utilities/Geolocator";
 
     export default {
@@ -116,7 +115,7 @@
             }
         },
         components: {
-            EventCard
+            EventWindow
         },
     }
 </script>

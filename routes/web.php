@@ -32,7 +32,7 @@ Route::prefix('events')
         ]);
 
         Route::middleware('auth')
-            ->group(function() {
+            ->group(function () {
                 Route::get('mine', [
                     'as' => 'events.userEvents',
                     'uses' => 'events\EventsController@userEvents'
@@ -59,4 +59,3 @@ Route::prefix('events')
             'uses' => 'events\EventsController@getEvent'
         ]);
     });
-

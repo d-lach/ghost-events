@@ -1,12 +1,11 @@
 <template>
     <div>
-        <event-abstract v-for="(event, index) in events" :key="index" :event="event"></event-abstract>
+        <event-card v-for="(event, index) in events" :key="index" :event="event"></event-card>
     </div>
 </template>
 
 <script>
-    import EventAbstract from "../events/EventAbstract.vue";
-    import EventsMockup from "~/mockup/EventsMockup";
+    import EventCard from "../events/EventCard.vue";
 
     export default {
         props: ['events'],
@@ -20,7 +19,7 @@
         methods: {
         },
         components: {
-            EventAbstract
+            EventCard
         },
     }
 </script>

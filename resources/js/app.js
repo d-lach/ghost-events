@@ -23,12 +23,19 @@ Vue.filter('name', Formatting.titleCase);
 Vue.use(BootstrapVue);
 Vue.component('GmapCluster', GmapCluster);
 
-Vue.prototype.$getUserId = () => document.querySelector("meta[name='user-id']").getAttribute('content');
-
 // automatically register components inside components/core
 const files = require.context('./components/core', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
+/*
+
+window.$getUserId = () => {
+    if (!window.$userId)
+        window.$userId = parseInt(document.querySelector("meta[name='user-id']").getAttribute('content'));
+    return window.$userId;
+};
+*/
 
 const app = new Vue({
     el: '#app'
 });
+

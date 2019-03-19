@@ -1,5 +1,4 @@
 <template>
-
     <div class="card">
         <div class="card-header">
             <div class="row">
@@ -7,7 +6,7 @@
                     {{ event.name }}
                 </div>
                 <div class="col text-right">
-                    <span class="number-of-guests">{{ event.numberOfGuests }}</span> /
+                    <span class="number-of-guests">{{ currentNumberOfGuests }}</span> /
                     <span class="max-number-of-guests">{{ event.maxGuests }} </span>
                 </div>
             </div>
@@ -22,14 +21,26 @@
         <div class="card-body">
             {{ event.description | text }}
         </div>
+        <div class="card-footer">
+            <event-join-button  ref="joinControl" :event="event"
+                                @joined="currentNumberOfGuests++;"
+                                @left="currentNumberOfGuests--;"></event-join-button>
+        </div>
     </div>
 </template>
 
 <script>
     import moment from 'moment';
+    import EventJoinButton from '../events/EventJoinButton.vue';
 
     export default {
         props: ['event'],
+        data: function() {
+
+            return {
+               currentNumberOfGuests: this.event.guests.length,
+            }
+        },
         computed: {
             daysToStart() {
                 return moment(this.event.starts_at, 'YYYY-MM-DD HH:mm').diff(moment(), 'days');
@@ -50,21 +61,16 @@
         },
         mounted() {
         },
-        methods: {}
+        methods: {
+        },
+        components: {
+            EventJoinButton
+        }
     }
 </script>
 
 <style scoped>
-
-    .card {
-        width: 22rem;
-        height: 17em;
-        /*max-width: 20em;*/
-        margin: 1em;
-        /*overflow: hidden;*/
-    }
-
-    .card-body{
+    .card-body {
         overflow: auto;
     }
 </style>
