@@ -3,7 +3,6 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
     <!-- User Id -->
     @if(Auth::id())
         <meta name="user-id" content="{{ Auth::id() }}">
@@ -23,7 +22,8 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
-
+    {{--<script src="https://maps.googleapis.com/maps/api/js?key={{ env('MIX_GOOGLE_API_KEY') }}&libraries=places"></script>
+--}}
     @yield('headers')
 
 </head>

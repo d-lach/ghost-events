@@ -1,6 +1,6 @@
 <template>
     <div class="d-flex flex-grow-1">
-        <event-window v-if="anyActive" :event="activeEvent"></event-window>
+        <event-map-item v-if="anyActive" :event="activeEvent"></event-map-item>
         <GmapMap
                 :center="center"
                 :zoom="zoom"
@@ -19,14 +19,10 @@
             </GmapCluster>
         </GmapMap>
     </div>
-
-    <!--@rightclick="event.marker.rightClicked++"-->
-    <!--@dragend="event.marker.dragended++"-->
-    <!--@position_changed="updateChild(m, 'position', $event)"-->
 </template>
 
 <script>
-    import EventWindow from "../events/EventWindow.vue";
+    import EventMapItem from "../events/card/EventMapItem.vue";
     import EventsService from "~/services/EventsService";
     import Geolocator from "~/Utilities/Geolocator";
 
@@ -114,7 +110,7 @@
             }
         },
         components: {
-            EventWindow
+            EventMapItem
         },
     }
 </script>

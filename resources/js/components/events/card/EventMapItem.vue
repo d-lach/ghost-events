@@ -6,7 +6,7 @@
 
 <script>
     import moment from 'moment';
-    import EventItem from "../events/EventItem.vue";
+    import EventItem from "./EventCard.vue";
 
     export default {
         props: ['event'],
@@ -44,11 +44,5 @@
         width: 50vh;
         height: 65vh;
     }
-
-</style>
-
-<style>
-
-
 
 </style>

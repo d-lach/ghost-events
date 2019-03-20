@@ -3,7 +3,7 @@
 </template>
 
 <script>
-    import EventItem from "../events/EventItem.vue";
+    import EventItem from "./EventCard.vue";
 
     export default {
         props: ['event'],
@@ -27,9 +27,4 @@
         height: 17em;
         margin: 1em;
     }
-
-</style>
-
-<style>
-
 </style>

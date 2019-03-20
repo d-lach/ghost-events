@@ -23,7 +23,6 @@
         methods: {
             loadNewPage(page) {
                 EventsService.getEventsFromSoonest(page).then((response) => {
-//                    console.log("response", response);
                     if (response.error) {
                         return;
                     }

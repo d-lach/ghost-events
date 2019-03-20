@@ -31,7 +31,7 @@
 
 <script>
     import moment from 'moment';
-    import EventJoinButton from '../events/EventJoinButton.vue';
+    import EventJoinButton from '../EventJoinButton.vue';
 
     export default {
         props: ['event'],
