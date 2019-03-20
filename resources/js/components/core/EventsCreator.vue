@@ -42,10 +42,12 @@
                                              type="datetime"
                                              range
                                              :not-before="new Date()"
-                                             format="YY-MM-DD HH:mm"
+                                             format="DD-MM-YY HH:mm"
                                              :shortcuts="dateTimeSettings.shortcuts"
                                              :lang="dateTimeSettings.lang"
-                                             :time-picker-options="dateTimeSettings.timeOptions"></date-picker>
+                                             :time-picker-options="dateTimeSettings.timeOptions"
+                                             :disabled="isArchival"
+                                ></date-picker>
                                 <div v-if="errors && errors.starts_at" class="text-danger">{{ errors.starts_at[0] }}
                                 </div>
                             </div>
@@ -58,9 +60,12 @@
                                              v-model="openTill" type="datetime"
                                              :not-before="new Date()"
                                              :not-after="endsAtObj"
+                                             format="DD-MM-YY HH:mm"
                                              @input="updateCloseDate"
                                              :lang="dateTimeSettings.lang"
-                                             :time-picker-options="dateTimeSettings.timeOptions"></date-picker>
+                                             :time-picker-options="dateTimeSettings.timeOptions"
+                                             :disabled="isArchival"
+                                ></date-picker>
                                 <div v-if="errors && errors.closes_at" class="text-danger">{{ errors.closes_at[0] }}
                                 </div>
                             </div>
@@ -179,7 +184,7 @@
                         end: '23:30'
                     }
                 },
-
+                isArchival: false
             }
         },
         computed: {
@@ -205,6 +210,9 @@
             this.endsAtObj = this.event.ends_at ? new Date(this.event.ends_at) : null;
             this.openTill = this.event.closes_at ? new Date(this.event.closes_at) : null;
             this.duration.push(this.startsAtObj, this.endsAtObj);
+
+            this.isArchival = (this.endsAtObj && this.endsAtObj < Date.now());
+            this.updateAddressSearchBar();
         },
         methods: {
             newAddress(event) {
@@ -253,21 +261,30 @@
                 this.event.closes_at = moment(dateTime).format(this.dateTimeFormat);
             },
             submit() {
-                if (this.loaded) {
-                    this.loaded = false;
-                    this.success = false;
-                    this.errors = {};
-                    EventsService.save(this.event).then(({data, succcess, status}) => {
-                        this.loaded = true;
-                        this.success = succcess;
+                if (!this.loaded)
+                    return;
 
-                        if (!succcess && status === 422) {
-                            this.errors = data.errors || {};
-                            return;
-                        }
+                this.loaded = false;
+                this.success = false;
+                this.errors = {};
 
-                    });
+                let toSubmit = {...this.event};
+                if (this.isArchival) {
+                    delete toSubmit.starts_at;
+                    delete toSubmit.ends_at;
+                    delete toSubmit.closes_at;
                 }
+
+                EventsService.save(toSubmit).then(({data, succcess, status}) => {
+                    this.loaded = true;
+                    this.success = succcess;
+
+                    if (!succcess && status === 422) {
+                        this.errors = data.errors || {};
+                        return;
+                    }
+                });
+
             },
         },
         components: {
