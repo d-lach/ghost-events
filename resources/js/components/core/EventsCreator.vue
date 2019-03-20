@@ -3,8 +3,6 @@
         <div class="row justify-content-center">
             <div class="subpage-header h2">
                 {{ isInEditorMode ? "Edit" : "Create" }} Event
-
-
             </div>
         </div>
         <div class="row justify-content-center">
@@ -21,8 +19,6 @@
                             <input type="text" class="form-control long-text-input" name="description" id="description"
                                    v-model="event.description"/>
                             <div v-if="errors && errors.description" class="text-danger">{{ errors.description[0] }}
-
-
                             </div>
                         </div>
                     </div>
@@ -33,8 +29,6 @@
                                 <input type="number" class="form-control number-input" name="maxGuests" id="maxGuests"
                                        v-model="event.maxGuests"/>
                                 <div v-if="errors && errors.maxGuests" class="text-danger">{{ errors.maxGuests[0] }}
-
-
                                 </div>
                             </div>
                         </div>
@@ -53,9 +47,6 @@
                                              :lang="dateTimeSettings.lang"
                                              :time-picker-options="dateTimeSettings.timeOptions"></date-picker>
                                 <div v-if="errors && errors.starts_at" class="text-danger">{{ errors.starts_at[0] }}
-
-
-
                                 </div>
                             </div>
                             <div v-if="errors && errors.ends_at" class="text-danger">{{ errors.ends_at[0] }}</div>
@@ -71,8 +62,6 @@
                                              :lang="dateTimeSettings.lang"
                                              :time-picker-options="dateTimeSettings.timeOptions"></date-picker>
                                 <div v-if="errors && errors.closes_at" class="text-danger">{{ errors.closes_at[0] }}
-
-
                                 </div>
                             </div>
                         </div>
@@ -95,44 +84,17 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="form-group">
-                                    <label for="street">Street</label>
-                                    <input type="text" class="form-control" name="street" id="street"
-                                           v-model="event.street"/>
-                                    <div v-if="errors && errors.street" class="text-danger">{{ errors.street[0] }}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-3">
-                                <div class="form-group">
-                                    <label for="zipCode">Zip code</label>
-                                    <input type="text" class="form-control" name="zipCode" id="zipCode"
-                                           v-model="event.zipCode"/>
-                                    <div v-if="errors && errors.zipCode" class="text-danger">
-                                        {{ errors.zipCode[0] }}
-
-
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-9">
-                                <div class="form-group">
-                                    <label for="city">City</label>
-                                    <input type="text" class="form-control" name="city" id="city"
-                                           v-model="event.city"/>
-                                    <div v-if="errors && errors.city" class="text-danger">{{ errors.city[0] }}</div>
+                                    <label for="address">Location</label>
+                                    <GmapAutocomplete ref="addressInput" class="address-input" name="address"
+                                                      id="address" :selectFirstOnEnter="true"
+                                                      @place_changed="newAddress">
+                                    </GmapAutocomplete>
                                 </div>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-12">
-                               <!-- <GmapAutocomplete :selectFirstOnEnter="true" ref="addressInput"
-                                                  @place_changed="newAddress">
-                                </GmapAutocomplete>-->
-
-                                <!--<g-autocomplete :id="'street'" @place_changed="newAddress"></g-autocomplete>
--->
-                                <event-location :coords="event"
+                                <event-location :coords="coordinates"
                                                 :address="address"
                                                 @address-update="setAddressFromMap"
                                 ></event-location>
@@ -142,9 +104,6 @@
                 </div>
                 <div class="row justify-content-center mt-3">
                     <button type="submit" class="btn btn-primary">{{ isInEditorMode ? "update" : "save" }}
-
-
-
                     </button>
                 </div>
                 <div class="row guests-controller-wrapper" v-if="isInEditorMode">
@@ -162,7 +121,6 @@
     import GuestsController from "../events/GuestsController.vue";
     import DatePicker from 'vue2-datepicker';
     import moment from 'moment';
-   // import GmapAutocomplete from 'vue2-google-maps/dist/components/autocompleteImpl'
 
     export default {
         props: {
@@ -186,19 +144,9 @@
         },
         data() {
             return {
-                //event: {},
-                /* address: {
-                 street: this.event.street,
-                 zipCode: this.event.zipCode,
-                 city: this.event.city
-                 },
-                 coords: {
-                 latitude: this.event.latitude,
-                 }*/
                 event: {
                     ...this.eventData
                 },
-
                 duration: [],
                 openTill: "",
                 startsAtObj: "",
@@ -244,6 +192,12 @@
                     zipCode: this.event.zipCode,
                     city: this.event.city
                 }
+            },
+            coordinates() {
+                return {
+                    latitude: this.event.latitude,
+                    longitude: this.event.longitude
+                }
             }
         },
         mounted() {
@@ -251,24 +205,45 @@
             this.endsAtObj = this.event.ends_at ? new Date(this.event.ends_at) : null;
             this.openTill = this.event.closes_at ? new Date(this.event.closes_at) : null;
             this.duration.push(this.startsAtObj, this.endsAtObj);
-
-//            console.log(google);
-//            let auto = new google.maps.places.Autocomplete(document.getElementById('street'));
-//            console.log(auto);
-
-            // console.log(GmapAutocomplete);
         },
         methods: {
-            setAddressFromMap(event) {
-              this.event.street = event.address.street;
-              this.event.city = event.address.city;
-              this.event.zipCode = event.address.zipCode;
-
-              this.event.latitude = event.coordinates.latitude;
-              this.event.longitude = event.coordinates.longitude;
-            },
             newAddress(event) {
-                console.log(event);
+                this.event.street = [this.findInRawGoogleAddress(event, 'route')]
+                    + " "
+                    + this.findInRawGoogleAddress(event, 'street_number');//  event.
+                this.event.city = this.findInRawGoogleAddress(event, 'locality');
+                this.event.zipCode = this.findInRawGoogleAddress(event, 'postal_code');
+
+                this.event.longitude = event.geometry.location.lng();
+                this.event.latitude = event.geometry.location.lat();
+            },
+            findInRawGoogleAddress(addressEvent, componentType) {
+                let found = addressEvent.address_components.find((component) => {
+                    return component.types.indexOf(componentType) >= 0;
+                });
+                if (!found)
+                    return "";
+
+                return found.long_name;
+            },
+            updateAddressSearchBar() {
+                document.getElementById('address').value = [
+                    this.event.street,
+                    this.event.zipCode,
+                    this.event.city
+                ].map(s => s.trim())
+                    .filter(s => s.length > 0)
+                    .join(", ");
+            },
+            setAddressFromMap(event) {
+                this.event.street = event.address.street;
+                this.event.city = event.address.city;
+                this.event.zipCode = event.address.zipCode;
+
+                this.event.latitude = event.coordinates.latitude;
+                this.event.longitude = event.coordinates.longitude;
+
+                this.updateAddressSearchBar();
             },
             updateDuration(range) {
                 this.event.starts_at = moment(range[0]).format(this.dateTimeFormat);
@@ -302,17 +277,6 @@
 </script>
 
 <style scoped>
-    .event-data {
-        /*border-style: solid;
-        border-width: 1px;
-        border-radius: 4px;*/
-        /*padding: 0.15em;
-        margin: 0.15em;*/
-        /*border-left-width: 10px;*/
-        /*border-right-width: 10px;*/
-        /*border-color: #34346747;*/
-    }
-
     .number-input {
         width: 4em;
     }
@@ -340,6 +304,14 @@
 
     .long-text-input {
         height: 7em;
+    }
+
+    .address-input {
+        width: 100%;
+        line-height: 1.5em;
+        font-size: 1.15em;
+        border-width: 0 0 4px 0;
+        border-radius: 2px;
     }
 
     .switch {

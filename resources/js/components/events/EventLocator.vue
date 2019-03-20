@@ -1,11 +1,5 @@
 <template>
     <div class="map-wrapper">
-        <div class="debug">
-            ({{ currentCoords.lat | amount }}, {{ currentCoords.lng | amount }})
-
-
-
-        </div>
         <GmapMap
                 :center="center"
                 :zoom="zoom"
@@ -18,10 +12,6 @@
             </gmap-marker>
         </GmapMap>
     </div>
-
-    <!--@rightclick="event.marker.rightClicked++"-->
-    <!--@dragend="event.marker.dragended++"-->
-    <!--@position_changed="updateChild(m, 'position', $event)"-->
 </template>
 
 <script>
@@ -48,33 +38,11 @@
                     }
                 }
             }
-
-        },
-        watch: {
-            address: function (newValue) {
-                if (this.parseAddress(this.currentAddress) === this.parseAddress(newValue))
-                    return;
-                this.lastInputTimestamp = moment();
-                console.log("going to set");
-                setTimeout(() => {
-                    if (moment().diff(this.lastInputTimestamp) < 499)
-                        return;
-                    console.log("Setting", newValue);
-                    Object.assign(this.currentAddress, newValue);
-                    this.setMarkerAtAddress();
-                }, 500);
-
-            },
-            coords: function (newValue) {
-                console.log("coords", newValue);
-            }
         },
         data() {
             return {
                 currentAddress: {
-                    street: this.coords.street,
-                    city: this.coords.city,
-                    zipCode: this.coords.zipCode
+                    ...this.address
                 },
                 currentCoords: {
                     lat: this.coords.latitude,
@@ -94,6 +62,15 @@
                 this.setMarkerAtAddress().then(this.centeringAtMarker());
             } else
                 this.setMarkerAtUserLocation().then(this.centeringAtMarker());
+        },
+        watch: {
+            coords: function ({latitude, longitude}) {
+                if (latitude === this.currentCoords.lat && longitude === this.currentCoords.lng)
+                    return;
+
+                this.setMarkerAt(latitude, longitude);
+                this.centerAtMarker();
+            }
         },
         computed: {
             isAddressSet() {
@@ -120,7 +97,8 @@
             updateAddress(event) {
                 this.applyGeocode({
                     lat: event.latLng.lat(),
-                    lng: event.latLng.lng()});
+                    lng: event.latLng.lng()
+                });
             },
             applyGeocode(latlng) {
                 let currentRequestId = ++this.requestId;
@@ -129,46 +107,48 @@
                         if (currentRequestId !== this.requestId)
                             return;
 
-                        this.currentAddress.street = address.street + " " + address.streetNumber;
+                        if (address.street === "Unnamed Road")
+                            this.currentAddress.street = "";
+                        else
+                            this.currentAddress.street = address.street + " " + address.streetNumber;
                         this.currentAddress.city = address.city;
                         this.currentAddress.zipCode = address.postalCode;
-                        this.currentCoords.lng = coords.longitude;
+                        if (this.currentAddress.zipCode.length === 2)
+                            this.currentAddress.zipCode += "-000";
+
                         this.currentCoords.lat = coords.latitude;
+                        this.currentCoords.lng = coords.longitude;
 
                         if (this.parseAddress(this.currentAddress) !== this.parseAddress(this.address)) {
                             this.$emit('address-update', {
                                 address: this.currentAddress,
                                 coordinates: {
-                                    latitude: coords.lat,
-                                    longitude: coords.lng
+                                    latitude: this.currentCoords.lat,
+                                    longitude: this.currentCoords.lng
                                 }
                             });
                         }
-
-//                        console.log("ok:", address);
                     }).catch((err) => {
-                    // invalid geocode, shouldn't happen
-                });
+                        // invalid geocode, shouldn't happen
+                    });
             },
             setMarkerAt(x, y, z = 12) {
                 this.currentCoords.lat = x;
                 this.currentCoords.lng = y;
-
-//                = {lat: x, lng: y};
-                // this.zoom = z;
             },
             setMarkerAtAddress() {
                 Geolocator.addressToGeocode(this.parseAddress(this.address))
-                    .then(({coords}) =>{
-                    this.applyGeocode({
-                        lat:coords.latitude,
-                        lng: coords.longitude
-                    });
-                    this.centerAtMarker();
-                }).catch(()=> {}); // invalid address, it's ok.
+                    .then(({coords}) => {
+                        this.applyGeocode({
+                            lat: coords.latitude,
+                            lng: coords.longitude
+                        });
+                        this.centerAtMarker();
+                    }).catch(() => {
+                }); // invalid address, it's ok.
             },
             parseAddress(address) {
-              return address.street + ", " + address.city + ", " + address.zipCode;
+                return address.street + ", " + address.city + ", " + address.zipCode;
             },
             setMarkerAtUserLocation() {
                 return this.findHomeLocationViaBrowser()
@@ -199,14 +179,7 @@
     }
 </script>
 
-<style scoped>
-
-    .debug {
-        position: absolute;
-        z-index: 1001;
-        background: rgba(200, 200, 200, 0.6);
-    }
-
+<style scoped lang="less">
     .map-wrapper {
         margin: 0 !important;
         width: 100%;
