@@ -17,10 +17,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-//Route::middleware('auth:api')
-//    ->resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
-//Route::resource('events', 'events\EventsApiController', ['except' => ['index', 'edit', 'create']]);
-
 Route::prefix('events')
     ->group(function () {
 
@@ -78,7 +74,7 @@ Route::prefix('events')
 
                 Route::post('{eventId}/invite', [
                     'as' => 'events.invite',
-                    'uses' => 'events\EventsApiController@invite'
+                    'uses' => 'events\InvitationsController@invite'
                 ]);
 
                 Route::post('{eventId}/guests/add', [
@@ -93,6 +89,3 @@ Route::prefix('events')
 
             });
     });
-
-//Route::middleware('auth:api')
-//    ->resource('events', 'events\EventsApiController', ['except' => ['index']]);

@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Mailing\Mailing;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -10,6 +11,15 @@ use Illuminate\Support\Facades\DB;
  */
 class Events
 {
+    /**
+     * @var Mailing
+     */
+    private $mailer;
+
+    function __construct(Mailing $mailer) {
+        $this->mailer = $mailer;
+    }
+
     /**
      * @param User|null $userOrNull
      * @return array|string
@@ -124,15 +134,6 @@ class Events
     {
         $event = $this->_retrieveEvent($eventOrID);
         $event->removeGuest($userId);
-    }
-
-    function invite(int $userId, $eventOrId)
-    {
-        $event = $this->_retrieveEvent($eventOrId);
-        if ($event->hasGuest($userId))
-            return;
-
-        $event->invite($userId);
     }
 
     function getFull($eventOrId)

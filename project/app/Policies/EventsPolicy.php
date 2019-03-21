@@ -48,18 +48,11 @@ class EventsPolicy
 
     public function edit(User $user, Event $event)
     {
-//        var_dump('edit');
-//        print ("test of events policy Edit");
-//        print ($user->id);
-//        print (" vs ");
-//        print ($event->host()->id);
-//        return true;
         return $user->id === $event->host()->id;
     }
 
     public function join(User $user, Event $event){
         return !$event->private || $event->host()->id === $user->id ||$event->isInvited($user->id);
-//            $event->isInvited($user->id) || $event->host()->id === $user->id;
     }
 
     public function invite(User $user, Event $event){

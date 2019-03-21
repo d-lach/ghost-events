@@ -33,7 +33,6 @@ class RelationsTablesSeeder extends Seeder
         DB::insert("insert into `events_guests` (`event_id`, `user_id`) values "
             . implode(", ", $guests)
             ." on duplicate key update event_id = event_id");
-        //DB::table('events_guests')->updateOrInsert($guests); //, $guests);
 
         DB::table('events_invitations')->insert($invitations);
     }
@@ -60,18 +59,14 @@ class RelationsTablesSeeder extends Seeder
         for ($i = 1; $i <= $this->eventsCounter; $i++) {
             for ($j = 0; $j < rand(0, 10); $j++) {
                 $userId = $this->randomUserId();
-//                array_push($eventsGuests, ['event_id' => $i, 'user_id' => $userId]);
                 $eventsGuests[] = "(" . $i . "," . $userId . ")";
-//                array_push($eventsGuests, , $userId);
-//
+
                 if (!array_key_exists($i, $this->registeredUsersPerEvent))
                     $this->registeredUsersPerEvent[$i] = [];
 
                 array_push($this->registeredUsersPerEvent[$i], $userId);
             }
         }
-
-//       var_dump ( $eventsGuests);
 
         return $eventsGuests;
     }
