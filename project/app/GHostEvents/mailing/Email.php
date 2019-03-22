@@ -49,7 +49,11 @@ class Email implements Sending
 
     public function send()
     {
-        $this->engine->addAddress($this->address, $this->receiver);
+        if ($this->address === "")
+            return false;
+
+        $this->engine->addAddress($this->address, $this->receiver !== "" ? $this->receiver : $this->address);
         $this->engine->send();
+        return true;
     }
 }

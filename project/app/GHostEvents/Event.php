@@ -19,7 +19,6 @@ class Event extends Model
     protected $appends = [
         'host',
         'guests'
-
     ];
 
     function guests()

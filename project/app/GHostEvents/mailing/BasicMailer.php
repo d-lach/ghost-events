@@ -22,6 +22,7 @@ class BasicMailer implements Mailing
     function __construct()
     {
         $this->appMailAddress = env('MAIL_TEST_ADDRESS');
+//        print ("appmail:|" . $this->appMailAddress . "|<br>");
         $this->appSenderName = 'G-host Team';
     }
 
@@ -51,15 +52,8 @@ class BasicMailer implements Mailing
             $mail = $this->prepareMail();
             $mail->addAddress($this->appMailAddress, 'Tester');
             $mail->Subject = 'Mailing test';
-            //$mail->IsHTML(true);
-//            $mail->Body = view('emails.event-invitation-email', [
-//                'eventLink' => "localhost",
-//                'acceptInvitationLink' => "localhost",
-//                'event' => Event::find(1)
-//            ])->render();
             $mail->Body = "Test message";
             $mail->send();
-
         } catch (MailException $e) {
             echo $e->errorMessage();
         } catch (\Exception $e) {

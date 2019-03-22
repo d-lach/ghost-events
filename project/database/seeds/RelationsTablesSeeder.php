@@ -39,11 +39,6 @@ class RelationsTablesSeeder extends Seeder
     private function validateGuestsNumber()
     {
         DB::raw('UPDATE events, (SELECT events.*, count(events.id) as numberOfGuests FROM `events` left join `events_guests` on events.id = events_guests.event_id group by events.id having maxGuests < numberOfGuests) as invalidEvents set events.maxGuests = invalidEvents.numberOfGuests where events.id = invalidEvents.id');
-        /*Event::select('events.*', DB::raw('count(events.id) as numberOfGuests'))
-            ->join('events_guests', 'events.id', '=', 'events_guests.event_id', 'left')
-            ->groupBy('events.id')
-            ->having('count(events.id)', '>', 'events.maxGuests')
-            ->update(['events.maxGuests' => DB::raw('`numberOfGuests`')]);*/
     }
 
     private function getRandomizedHosts()
