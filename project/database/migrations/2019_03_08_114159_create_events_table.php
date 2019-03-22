@@ -15,7 +15,6 @@ class CreateEventsTable extends Migration
     {
         Schema::create('events', function (Blueprint $table) {
             $table->bigIncrements('id');
-            $table->timestamps();
 
             // info
             $table->string('name');
@@ -36,6 +35,7 @@ class CreateEventsTable extends Migration
 
             // status
             $table->boolean('private');
+            $table->timestamps();
         });
     }
 

@@ -36,10 +36,12 @@
     },
     "autoload": {
         "psr-4": {
-            "App\\": "app/"
+            "App\\": "app/",
+            "Libs\\": "app/libs/"
         },
         "classmap": [
             "database/seeds",
+            "database/migrations",
             "database/factories"
         ]
     },
