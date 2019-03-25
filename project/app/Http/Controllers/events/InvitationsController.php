@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Events;
 use App\Http\Controllers\Controller;
+use App\Invitation;
 use App\Invitations;
 use App\Mailing\Mailing;
 use Illuminate\Http\Request;
@@ -32,6 +33,7 @@ class InvitationsController extends Controller
         $this->events = $events;
         $this->emails = $emails;
     }
+
     public function invite(Request $request, int $eventId)
     {
         // disabled for testing only
@@ -44,7 +46,12 @@ class InvitationsController extends Controller
     }
 
 
-    function invitationAccepted(int $invitationId) {
-        return "Dummy confirmation";
+    function invitationAccepted(string $invitationToken)
+    {
+        $event = $this->invitations->accept($invitationToken);
+        if ($event)
+            return redirect()->route('event.page', ['eventId' => $event->id]);
+
+        return view('events.invitation-expired');
     }
 }

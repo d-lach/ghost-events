@@ -26,17 +26,11 @@ class Invitations
 
         $event = $this->_retrieveEvent($eventId);
 
-        if ($event->hasGuest($userId)) // cannot invite someone who is already a guest of given event
+        // cannot invite someone who is already invited to or is a guest of given event
+        if ($event->hasGuest($userId) || $event->isInvited($userId))
             return;
-
-        print("going to invite user#" . $userId . " to Event-" . $eventId . " ");
-
+        
         $invitation = Invitation::make();
-        //[
-        // 'event_id' => $eventId,
-        // 'user_id' => $userId
-        //   ]
-        //);
 
         $userToInvite = User::find($userId);
 
@@ -46,22 +40,38 @@ class Invitations
         $invitationToken = $invitation->freshToken();
 
         $eventUrl = route('event.page', ['eventId' => $event->id]);
-        $invitationUrl = route('invitation.confirmation', ['eventId' => $event->id]);
+        $invitationUrl = route('invitation.confirmation', ['confirmationToken' => $invitationToken]);
 
         $this->mailer->newHTMLMail()
-            ->to("d.lach.321@gmail.com")
+            ->to($userToInvite->email)
             ->as($userToInvite->name)
             ->subject("Invitation " . $event->name)
             ->content(
                 view('emails.event-invitation-email', [
-                    'eventLink' => "localhost",
-                    'acceptInvitationLink' => "localhost",
+                    'eventLink' => $eventUrl,
+                    'acceptInvitationLink' => $invitationUrl,
                     'event' => $event
                 ])->render())
             ->send();
 
+        $invitation->save();
+    }
 
-//        $event->invite($userId);
+    function accept($invitationToken)
+    {
+        $invitation = Invitation::where('token', '=', $invitationToken)->first();
+
+
+        if (!$invitation || !$invitation->isValid()) {
+            return false;
+        }
+
+        $event = $invitation->event;
+        $invitation->event->addGuest($invitation->guest->id);
+        $invitation->delete();
+
+        return $event;
+
     }
 
     /**

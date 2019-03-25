@@ -21,28 +21,24 @@ class BasicMailer implements Mailing
 
     function __construct()
     {
-        $this->appMailAddress = env('MAIL_TEST_ADDRESS');
-//        print ("appmail:|" . $this->appMailAddress . "|<br>");
         $this->appSenderName = 'G-host Team';
     }
 
     private function prepareMail()
     {
         $mail = new PHPMailer(TRUE);
-        if (env('MAIL_DRIVER') == 'smtp') {
-            $mail->IsSMTP(true); // enable SMTP
-            $mail->SMTPDebug = 1; // debugging: 1 = errors and messages, 2 = messages only
+        if (config('mail.driver') == 'smtp') {
+            $mail->IsSMTP(); // enable SMTP
             $mail->SMTPAuth = true; // authentication enabled
-            if (env('MAIL_SECURE'))
-                $mail->SMTPSecure = 'ssl'; // secure transfer enabled REQUIRED for Gmail
+            $mail->SMTPSecure = config('mail.encryption'); //config('mail.encryption'); // secure transfer enabled REQUIRED for Gmail
         }
-        $mail->Host = env('MAIL_HOST');
-        $mail->Port = env('MAIL_PORT'); // or 587
+        $mail->Host = config('mail.host');
+        $mail->Port = config('mail.port'); // or 587
 
-        $mail->Username = env('MAIL_USERNAME');
-        $mail->Password = env('MAIL_PASSWORD');
+        $mail->Username = config('mail.username');
+        $mail->Password = config('mail.password');
 
-        $mail->setFrom($this->appMailAddress, $this->appSenderName);
+        $mail->setFrom(config('mail.from.address'), config('mail.from.name'));
         return $mail;
     }
 
@@ -61,13 +57,15 @@ class BasicMailer implements Mailing
         }
     }
 
-    function newMail() : Sending {
-        return $this->prepareMail();
+    function newMail(): Sending
+    {
+        return new Email($this->prepareMail());
     }
 
-    function newHTMLMail() : Sending {
+    function newHTMLMail(): Sending
+    {
         $mail = $this->prepareMail();
         $mail->IsHTML(true);
-        return $mail;
+        return new Email($mail);
     }
 }

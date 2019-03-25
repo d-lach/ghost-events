@@ -2,6 +2,7 @@
     <div class="col">
         <div class="row align-content-center">
             Guests
+
         </div>
         <div class="row">
             <b-table responsive striped hover
@@ -9,20 +10,25 @@
                      :fields="fields">
                 <template slot="full-name" slot-scope="data">
                     {{ data.item.name | name }}
+
                 </template>
                 <template slot="gender" slot-scope="data">
                     {{ data.item.gender | gender }}
+
                 </template>
                 <template slot="age" slot-scope="data">
                     {{ data.item.age}}
+
                 </template>
-                <template slot="controls" slot-scope="data">
+                <template v-if="allowModifications" slot="controls" slot-scope="data">
                     <button v-if="isGuest(data.item)" :disabled="reachedGuestsLimit" @click="add(data.item)"
                             type="button" class="btn btn-success">
                         Add
+
                     </button>
                     <button v-else @click="remove(data.item)" type="button" class="btn btn-outline-danger">
                         Remove
+
                     </button>
                 </template>
             </b-table>
@@ -37,7 +43,13 @@
     import User from "~/User";
 
     export default {
-        props: ['event', 'guests'],
+        props: {
+            event: Object,
+            guests: Array,
+            allowModifications: {
+                default: true
+            }
+        },
         data() {
             return {
                 currentGuests: this.event.guests,

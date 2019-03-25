@@ -17,14 +17,14 @@ use Laravel\Passport\HasApiTokens;
 class Invitation extends Model
 {
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'event_id', 'email', 'password',
-    ];
+    protected $table = 'events_invitations';
+
+    public $timestamps = false;
+
+   /* protected $primaryKey = [
+        'event_id',
+        'user_id'
+    ];*/
 
     function freshToken() {
         $this->token = bin2hex(openssl_random_pseudo_bytes(32));
@@ -48,21 +48,21 @@ class Invitation extends Model
 
     function event()
     {
-        return $this->belongsTo('App\Event', 'event_id', 'id');//->first();
+        return $this->belongsTo('App\Event', 'event_id', 'id');
     }
 
-    function invite(int $userId)
-    {
-        DB::table('events_invitations')->updateOrInsert(
-            ['event_id' => $this->id, 'user_id' => $userId],
-            ['event_id' => $this->id, 'user_id' => $userId]
-        );
+    function isValid() {
+        $now = new DateTime('now');
+        $expiration = new DateTime($this->token_expires_at);
+        return $expiration > $now;
     }
 
-    function removeInvitation(int $userId)
-    {
-        DB::table('events_invitations')
-            ->where(['event_id' => $this->id, 'user_id' => $userId])
-            ->delete();
-    }
+  function delete() {
+      DB::table('events_invitations')
+          ->where('event_id', '=', $this->value('event_id'))
+          ->where('user_id', '=', $this->value('user_id'))
+          ->delete();
+  }
+
+
 }
