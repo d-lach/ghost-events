@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\events;
+namespace App\Http\Controllers;
 
 use App\Event;
 use App\EventsRepository;
@@ -77,14 +77,6 @@ class EventsApiController extends Controller
         $this->events->removeGuest(Auth::id(), $eventId);
     }
 
-    public function invite(Request $request, int $eventId)
-    {
-        $this->authorize('invite', Event::find($eventId));
-        foreach ($request->post('usersIds') as $userId) {
-            $this->events->invite($userId, $eventId);
-        }
-    }
-
     public function addGuest(Request $request, int $eventId)
     {
         $this->authorize('edit', Event::find($eventId));
@@ -109,7 +101,6 @@ class EventsApiController extends Controller
         $this->authorize('access', Event::find($eventId));
         return response()->json($this->events->getFull($eventId));
     }
-
 
     /**
      * Update the specified resource in storage.

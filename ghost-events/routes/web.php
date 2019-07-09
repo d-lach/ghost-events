@@ -19,43 +19,51 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+Route::prefix('invitations')
+    ->group(function () {
+        Route::get('confirm/{confirmationToken}', [
+            'as' => 'invitation.confirmation',
+            'uses' => 'InvitationsController@invitationAccepted'
+        ]);
+    });
+
 Route::prefix('events')
     ->group(function () {
         Route::get('', [
             'as' => 'events.list',
-            'uses' => 'events\EventsController@eventsList'
+            'uses' => 'EventsController@eventsList'
         ]);
 
         Route::get('map', [
             'as' => 'events.map',
-            'uses' => 'events\EventsController@eventsMap'
+            'uses' => 'EventsController@eventsMap'
         ]);
 
         Route::middleware('auth')
             ->group(function () {
                 Route::get('mine', [
                     'as' => 'events.userEvents',
-                    'uses' => 'events\EventsController@userEvents'
+                    'uses' => 'EventsController@userEvents'
                 ]);
 
                 Route::get('attend', [
                     'as' => 'events.userAsGuestEvents',
-                    'uses' => 'events\EventsController@userAsGuestEvents'
+                    'uses' => 'EventsController@userAsGuestEvents'
                 ]);
 
                 Route::get('new', [
                     'as' => 'events.creator',
-                    'uses' => 'events\EventsController@eventNew'
+                    'uses' => 'EventsController@eventNew'
                 ]);
 
                 Route::get('{eventId}/edit', [
                     'as' => 'events.editor',
-                    'uses' => 'events\EventsController@eventEdit'
+                    'uses' => 'EventsController@eventEdit'
                 ]);
             });
 
         Route::get('{eventId}', [
-            'as' => 'events.fullPage',
-            'uses' => 'events\EventsController@getEvent'
+            'as' => 'event.page',
+            'uses' => 'EventsController@getEvent'
         ]);
     });

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\events;
+namespace App\Http\Controllers;
 
 use App\Event;
 use App\EventsRepository;
@@ -38,7 +38,7 @@ class EventsController extends Controller
 
     public function getEvent($id)
     {
-        return view('events.event');
+        return view('events.event', $this->events->getFull($id)); //->with('event', Event::find($id), );
     }
 
     public function eventEdit($eventId)

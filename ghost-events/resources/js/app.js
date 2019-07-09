@@ -9,6 +9,8 @@ import Formatting from '~/Utilities/Formatting';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
 
+import GuestsController from "./components/events/GuestsController.vue";
+
 window.Vue = require('vue');
 
 window.Vue.use(VueGoogleMaps, {
@@ -26,20 +28,12 @@ Vue.filter('amount', Formatting.twoDecimals);
 
 Vue.use(BootstrapVue);
 Vue.component('GmapCluster', GmapCluster);
-// Vue.component('GAutocomplete', VueGoogleAutocomplete);
-// Vue.component('GmapAutocomplete', GmapAutocomplete);
 
 // automatically register components inside components/core
 const files = require.context('./components/core', true, /\.vue$/i);
 files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default));
-/*
 
-window.$getUserId = () => {
-    if (!window.$userId)
-        window.$userId = parseInt(document.querySelector("meta[name='user-id']").getAttribute('content'));
-    return window.$userId;
-};
-*/
+Vue.component("guests-controller", GuestsController);
 
 const app = new Vue({
     el: '#app'

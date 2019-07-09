@@ -14,6 +14,7 @@ class AppServiceProvider extends ServiceProvider
     public function register()
     {
         $this->app->singleton('EventsRepository', 'App\Events');
+        $this->app->bind(\App\Mailing\Mailing::class, \App\Mailing\BasicMailer::class);
     }
 
     /**

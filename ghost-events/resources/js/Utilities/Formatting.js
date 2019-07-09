@@ -3,8 +3,9 @@ import _ from "lodash";
 
 export default class Formatting {
     /**
-     * @param {string|Object} dateOrDateString in event format YYYY-MM-DD HH:mm or Moment Date Object
-     * @returns {*}
+     * @param { string | Moment } dateOrDateString
+     * date string in event format YYYY-MM-DD HH:mm or Moment Date Object
+     * @returns { string }
      */
     static relativeDate(dateOrDateString) {
         let date = dateOrDateString;
@@ -28,7 +29,7 @@ export default class Formatting {
 
     /**
      * @param {string} date in event format YYYY-MM-DD HH:mm
-     * @returns {*}
+     * @returns { string }
      */
     static parseEventDate(date) {
         return Moment(date, 'YYYY-MM-DD HH:mm');
