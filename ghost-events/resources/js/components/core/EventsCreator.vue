@@ -94,6 +94,10 @@
                                                       id="address" :selectFirstOnEnter="true"
                                                       @place_changed="newAddress">
                                     </GmapAutocomplete>
+                                    <div v-if="errors && errors.city" class="text-danger">{{ errors.city[0] }}</div>
+                                    <div v-if="errors && errors.street" class="text-danger">{{ errors.street[0] }}</div>
+                                    <div v-if="errors && errors.zipCode" class="text-danger">{{ errors.zipCode[0] }}
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -238,7 +242,8 @@
                     this.event.street,
                     this.event.zipCode,
                     this.event.city
-                ].map(s => s.trim())
+                ].filter(s => s && s.length > 0)
+                    .map(s => s.trim())
                     .filter(s => s.length > 0)
                     .join(", ");
             },
@@ -260,9 +265,11 @@
                 this.event.closes_at = moment(dateTime).format(this.dateTimeFormat);
             },
             submit() {
+                console.log("submition start");
                 if (!this.loaded)
                     return;
 
+                console.log("submition continue");
                 this.loaded = false;
                 this.success = false;
                 this.errors = {};
@@ -277,11 +284,13 @@
                 EventsService.save(toSubmit).then(({data, succcess, status}) => {
                     this.loaded = true;
                     this.success = succcess;
-
                     if (!succcess && status === 422) {
                         this.errors = data.errors || {};
                         return;
                     }
+                    console.log(data);
+                    if (data.successDestination)
+                        window.location.href = data.successDestination;
                 });
 
             },

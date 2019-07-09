@@ -61,9 +61,11 @@ class EventsApiController extends Controller
      */
     public function store(Request $request)
     {
-        $event = $this->events->create(1, $this->eventValidator($request->all())->validate());
+        $this->events->create(Auth::user()->id, $this->eventValidator($request->all())->validate());
 
-        return $event;
+        return response()->json([
+            'successDestination' => route('events.userEvents')
+        ]);
     }
 
     public function join(int $eventId)

@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Event;
 use App\EventsRepository;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
 
@@ -38,7 +37,7 @@ class EventsController extends Controller
 
     public function getEvent($id)
     {
-        return view('events.event', $this->events->getFull($id)); //->with('event', Event::find($id), );
+        return view('events.event', $this->events->getFull($id));
     }
 
     public function eventEdit($eventId)

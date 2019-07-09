@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Event as Event;
 use App\Mailing\Mailing;
 use Illuminate\Support\Facades\DB;
 
@@ -76,6 +77,7 @@ class EventsRepository
 
     function getAllHostedBy(int $userId)
     {
+//        dd ("loking for events hosted by" . $userId);
         return $this->allWithNumberOfGuests()
             ->join('events_hosts', function ($join) use ($userId) {
                 $join->on('events.id', '=', 'events_hosts.event_id');
