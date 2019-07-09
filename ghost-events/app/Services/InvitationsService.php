@@ -22,7 +22,7 @@ class InvitationsService
 
         $event = $this->_retrieveEvent($eventId);
 
-        // cannot invite someone who is already invited to or is a guest of given event
+        // cannot invite someone who is already invited to or participate in given event
         if ($event->hasGuest($userId) || $event->isInvited($userId))
             return;
         

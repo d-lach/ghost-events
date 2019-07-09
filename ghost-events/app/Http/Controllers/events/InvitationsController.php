@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Events;
+use App\Event;
+use App\EventsRepository;
 use App\Http\Controllers\Controller;
 use App\Invitation;
 use App\InvitationsService;
@@ -13,9 +14,9 @@ class InvitationsController extends Controller
 {
 
     /**
-     * @var Events
+     * @var EventsRepository
      */
-    private $events;
+    private $eventsRepository;
 
     /**
      * @var Mailing
@@ -25,12 +26,12 @@ class InvitationsController extends Controller
     /**
      * @var Mailing
      */
-    private $invitations;
+    private $invitationsService;
 
-    public function __construct(InvitationsService $invitations, Events $events, Mailing $emails)
+    public function __construct(InvitationsService $invitationsService, EventsRepository $eventsRepository, Mailing $emails)
     {
-        $this->invitations = $invitations;
-        $this->events = $events;
+        $this->invitationsService = $invitationsService;
+        $this->eventsRepository = $eventsRepository;
         $this->emails = $emails;
     }
 
@@ -38,7 +39,7 @@ class InvitationsController extends Controller
     {
         $this->authorize('invite', Event::find($eventId));
         foreach ($request->post('usersIds') as $userId) {
-            $this->invitations->invite($userId, $eventId);
+            $this->invitationsService->invite($userId, $eventId);
         }
 
         return "Ok";
@@ -47,7 +48,7 @@ class InvitationsController extends Controller
 
     function invitationAccepted(string $invitationToken)
     {
-        $event = $this->invitations->accept($invitationToken);
+        $event = $this->invitationsService->accept($invitationToken);
         if ($event) {
             return redirect()->route('event.page', ['eventId' => $event->id]);
         }

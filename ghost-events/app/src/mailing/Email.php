@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: espe
- * Date: 21.03.19
- * Time: 18:46
- */
 
 namespace App\Mailing;
 

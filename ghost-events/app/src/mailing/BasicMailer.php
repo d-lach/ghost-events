@@ -30,10 +30,10 @@ class BasicMailer implements Mailing
         if (config('mail.driver') == 'smtp') {
             $mail->IsSMTP(); // enable SMTP
             $mail->SMTPAuth = true; // authentication enabled
-            $mail->SMTPSecure = config('mail.encryption'); //config('mail.encryption'); // secure transfer enabled REQUIRED for Gmail
+            $mail->SMTPSecure = config('mail.encryption'); // secure transfer enabled REQUIRED for Gmail
         }
         $mail->Host = config('mail.host');
-        $mail->Port = config('mail.port'); // or 587
+        $mail->Port = config('mail.port');
 
         $mail->Username = config('mail.username');
         $mail->Password = config('mail.password');
