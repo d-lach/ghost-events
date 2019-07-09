@@ -1,0 +1,9 @@
+version: '3'
+services:
+    php:
+        volumes:
+            - szkolenie-sync:/var/www/html:nocopy
+
+volumes:
+  szkolenie-sync:
+    external: true

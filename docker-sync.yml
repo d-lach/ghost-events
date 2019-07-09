@@ -1,13 +1,23 @@
 version: "2"
-
 options:
-  verbose: false
+  verbose: true
 syncs:
-  applications-docker-sync: # name of the intermediary sync volume
-    compose-dev-file-path: 'docker-compose.sync.yml' # docker-compose override file
-
-    src: '${APP_CODE_PATH_HOST}' # host source directory
-    sync_userid: 1000 # giving permissions to www-data user (as defined in nginx and php-fpm Dockerfiles)
-    sync_strategy: '${DOCKER_SYNC_STRATEGY}' # for osx use 'native_osx', for windows use 'unison'
-
-    sync_excludes: ['etc'] # ignored directories
+  szkolenie-sync:
+    src: ${APP_PATH}
+    sync_excludes_type: 'Path'
+    sync_strategy: 'native_osx' # use 'native_osx' for macos,'unison' for windows, 'native_linux' for linux
+    sync_excludes:
+      # laravel
+      - 'storage'
+      - 'bootstrap/cache'
+      # symfony 2
+      - 'app/logs'
+      - 'app/cache'
+      # symfony 3
+      - 'var/cache'
+      - 'var/logs'
+      - 'var/sessions'
+      # phpstorm
+      - '.idea'
+      # netbeans
+      - 'nbproject'

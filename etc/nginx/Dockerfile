@@ -1,32 +1,17 @@
-FROM nginx:alpine
+FROM debian:jessie
 
-LABEL maintainer="Mahmoud Zalt <mahmoud@zalt.me>"
+MAINTAINER Maxence POUTORD <maxence.poutord@gmail.com>
 
-COPY nginx.conf /etc/nginx/
+RUN apt-get update && apt-get install -y \
+    nginx
 
-# If you're in China, or you need to change sources, will be set CHANGE_SOURCE to true in .env.
+RUN rm /etc/nginx/sites-enabled/default
 
-ARG CHANGE_SOURCE=false
-RUN if [ ${CHANGE_SOURCE} = true ]; then \
-    # Change application source from dl-cdn.alpinelinux.org to aliyun source
-    sed -i 's/dl-cdn.alpinelinux.org/mirrors.aliyun.com/' /etc/apk/repositories \
-;fi
+RUN echo "upstream php-upstream { server php:9000; }" > /etc/nginx/conf.d/upstream.conf
 
-RUN apk update \
-    && apk upgrade \
-    && apk add --no-cache openssl \
-    && apk add --no-cache bash \
-    && adduser -D -H -u 1000 -s /bin/bash www-data
+RUN usermod -u 1000 www-data
 
-ARG PHP_UPSTREAM_CONTAINER=php-fpm
-ARG PHP_UPSTREAM_PORT=9000
+CMD ["nginx"]
 
-# Set upstream conf and remove the default conf
-RUN echo "upstream php-upstream { server ${PHP_UPSTREAM_CONTAINER}:${PHP_UPSTREAM_PORT}; }" > /etc/nginx/conf.d/upstream.conf \
-    && rm /etc/nginx/conf.d/default.conf
-
-ADD ./startup.sh /opt/startup.sh
-RUN sed -i 's/\r//g' /opt/startup.sh
-CMD ["/bin/bash", "/opt/startup.sh"]
-
-EXPOSE 80 443
+EXPOSE 80
+EXPOSE 443
