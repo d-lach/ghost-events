@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\events;
 
 use App\Event;
-use App\Events;
+use App\EventsRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -17,9 +17,9 @@ class EventsApiController extends Controller
 
     /**
      * EventsApiController constructor.
-     * @param Events $events
+     * @param EventsRepository $events
      */
-    function __construct(Events $events)
+    function __construct(EventsRepository $events)
     {
         $this->events = $events;
     }
@@ -100,8 +100,9 @@ class EventsApiController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int $eventId
+     * @param  int  $eventId
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function show($eventId)
     {
@@ -113,9 +114,10 @@ class EventsApiController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $eventId
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $eventId
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function update(Request $request, int $eventId)
     {
@@ -130,8 +132,9 @@ class EventsApiController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int $eventId
+     * @param  int  $eventId
      * @return \Illuminate\Http\Response
+     * @throws \Illuminate\Auth\Access\AuthorizationException
      */
     public function destroy($eventId)
     {

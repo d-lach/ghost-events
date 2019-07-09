@@ -42,24 +42,16 @@ class EventsPolicy
      */
     public function update(User $user, Event $event)
     {
-        print ("test of events policy update");
         return $user->id === $event->host()->id;
     }
 
     public function edit(User $user, Event $event)
     {
-//        var_dump('edit');
-//        print ("test of events policy Edit");
-//        print ($user->id);
-//        print (" vs ");
-//        print ($event->host()->id);
-//        return true;
         return $user->id === $event->host()->id;
     }
 
     public function join(User $user, Event $event){
         return !$event->private || $event->host()->id === $user->id ||$event->isInvited($user->id);
-//            $event->isInvited($user->id) || $event->host()->id === $user->id;
     }
 
     public function invite(User $user, Event $event){
@@ -67,7 +59,6 @@ class EventsPolicy
     }
 
     public function access(User $user, Event $event) {
-        print ("test of events policy canAccess");
         return !($event->private)
             || $event->isInvited($user->id)
             || ($event->host()->id === $user->id)

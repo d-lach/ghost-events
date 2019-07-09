@@ -47,12 +47,6 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        //if ($exception instanceof PrivateEventException) {
-         //   return $request->expectsJson() ?
-         //       $this->prepareJsonResponse($request, $exception)//$request->json(["error" => $exception->getMessage()])
-        //        : $this->prepareResponse($request, $exception);
-       // } else {
             return parent::render($request, $exception);
-       // }
     }
 }

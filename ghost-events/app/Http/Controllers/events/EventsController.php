@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\events;
 
 use App\Event;
-use App\Events;
+use App\EventsRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ class EventsController extends Controller
 
     private $events = null;
 
-    public function __construct(Events $events)
+    public function __construct(EventsRepository $events)
     {
         $this->events = $events;
     }
@@ -60,7 +60,5 @@ class EventsController extends Controller
     public function userAsGuestEvents()
     {
         return view('events.user-events', ["events" => $this->events->getAllAttended(Auth::id())->get()]);
-
     }
-
 }

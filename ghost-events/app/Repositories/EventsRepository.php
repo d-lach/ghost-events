@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
  * Class Events - defines logic of events modification
  * @package App
  */
-class Events
+class EventsRepository
 {
     /**
      * @param User|null $userOrNull

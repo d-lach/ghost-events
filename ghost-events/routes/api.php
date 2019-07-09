@@ -90,9 +90,5 @@ Route::prefix('events')
                     'as' => 'events.invite',
                     'uses' => 'events\EventsApiController@removeGuest'
                 ]);
-
             });
     });
-
-//Route::middleware('auth:api')
-//    ->resource('events', 'events\EventsApiController', ['except' => ['index']]);
