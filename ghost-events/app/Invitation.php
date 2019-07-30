@@ -21,23 +21,13 @@ class Invitation extends Model
 
     public $timestamps = false;
 
-   /* protected $primaryKey = [
-        'event_id',
-        'user_id'
-    ];*/
-
     function freshToken() {
         $this->token = bin2hex(openssl_random_pseudo_bytes(32));
-
-//        $start_date = new DateTime();
 
         $this->token_expires_at = (new DateTime())
             ->add(DateInterval::createFromDateString('1 week'))
             ->format('Y-m-d H:i');
-//        $start_date->format('Y-m-d H:i');
-        //date('Y-m-d H:i', $date_to_pay);
-//        $attributes['token'] =
-//        $attributes['token_expires_at'] =
+
         return $this->token;
     }
 

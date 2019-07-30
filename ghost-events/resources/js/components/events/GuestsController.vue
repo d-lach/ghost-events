@@ -2,7 +2,6 @@
     <div class="col">
         <div class="row align-content-center">
             Guests
-
         </div>
         <div class="row">
             <b-table responsive striped hover
@@ -28,19 +27,30 @@
                     </button>
                     <button v-else @click="remove(data.item)" type="button" class="btn btn-outline-danger">
                         Remove
-
                     </button>
                 </template>
             </b-table>
+        </div>
+        <div class="row">
+            <div v-if="inviting" class="invitation-wrapper">
+                <input id="invitation-email" type="email" name="invitation-email" value="" v-model="invitationEmail">
+                <button @click="invite()" type="button" class="btn btn-primary invitation-button">
+                    Invite
+                </button>
+            </div>
+            <div v-else class="align-content-center">
+                <button @click="openInvitation()" type="button" class="btn btn-primary invitation-button">
+                    Add user
+                </button>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 
-    import Formatter from "~/Utilities/Formatting";
     import EventsService from "~/services/EventsService";
-    import User from "~/User";
+    import InvitationsService from "../../services/InvitationsService";
 
     export default {
         props: {
@@ -52,8 +62,9 @@
         },
         data() {
             return {
+                inviting: false,
+                invitationEmail: "",
                 currentGuests: this.event.guests,
-//                eventsWorking: new Map(),
                 fields: [
                     {
                         key: 'full-name',
@@ -61,12 +72,10 @@
                     },
                     {
                         key: 'gender',
-//                        label: 'Gender',
                         sortable: true,
                     },
                     {
                         key: 'age',
-//                        label: 'Gender',
                         sortable: true,
                     },
                     {
@@ -85,7 +94,6 @@
         },
         methods: {
             isGuest(user) {
-//                console.log(user.id, "vs", this.currentGuests);
                 return this.currentGuests.indexOf(user.id) < 0;
             },
             add(user) {
@@ -94,7 +102,6 @@
                 EventsService.addGuest(this.event.id, user.id);
             },
             remove(user) {
-                console.log("going to remove", user.id);
                 let userIndex = this.currentGuests.indexOf(user.id);
                 user._rowVariant = 'danger';
                 if (userIndex < 0)
@@ -102,9 +109,24 @@
 
                 this.currentGuests.splice(userIndex, 1);
                 EventsService.removeGuest(this.event.id, user.id);
+            },
+            invite() {
+                InvitationsService.invite(this.event.id, this.invitationEmail).then((response) => {
+                    console.log(response);
+                    this.invitationEmail = "";
+                    this.inviting = false;
+                });
+            },
+            openInvitation() {
+                this.inviting = true;
             }
         },
-
         components: {},
     }
 </script>
+
+<style lang="less">
+    .invitation-button {
+        margin: auto;
+    }
+</style>

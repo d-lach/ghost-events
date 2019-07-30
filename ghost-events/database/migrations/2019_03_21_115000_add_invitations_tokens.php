@@ -17,8 +17,6 @@ class AddInvitationsTokens extends Migration
         Schema::table('events_invitations', function ($table) {
             $table->string('token', 32)
                 ->unique();
-//                ->nullable()
-//                ->default(null);
 
             $table->dateTime('token_expires_at')
                 ->nullable()
@@ -33,8 +31,5 @@ class AddInvitationsTokens extends Migration
      */
     public function down()
     {
-//        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-//        Schema::dropIfExists('users');
-//        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

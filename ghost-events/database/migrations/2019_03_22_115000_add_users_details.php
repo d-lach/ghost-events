@@ -20,8 +20,6 @@ class AddUsersDetails extends Migration
                 ->after('name')
                 ->default(\App\User\Genders::Another);
 
-//            DB::statement("ALTER TABLE users MODIFY gender enum('Male', 'Female', 'Another') NOT NULL;");
-
             $table->date('birthday')
                 ->after('gender');
         });
@@ -34,8 +32,5 @@ class AddUsersDetails extends Migration
      */
     public function down()
     {
-//        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-//        Schema::dropIfExists('users');
-//        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
     }
 }

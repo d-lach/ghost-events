@@ -4,8 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Event;
 use App\EventsRepository;
-use App\Http\Controllers\Controller;
-use App\Invitation;
+use App\UsersRepository;
 use App\InvitationsService;
 use App\Mailing\Mailing;
 use Illuminate\Http\Request;
@@ -19,23 +18,42 @@ class InvitationsController extends Controller
     private $eventsRepository;
 
     /**
-     * @var Mailing
+     * @var UsersRepository
      */
-    private $emails;
+    private $usersRepository;
 
     /**
      * @var Mailing
      */
     private $invitationsService;
 
-    public function __construct(InvitationsService $invitationsService, EventsRepository $eventsRepository, Mailing $emails)
+    public function __construct(
+        InvitationsService $invitationsService,
+        EventsRepository $eventsRepository,
+        UsersRepository $usersRepository
+    )
     {
         $this->invitationsService = $invitationsService;
         $this->eventsRepository = $eventsRepository;
-        $this->emails = $emails;
+        $this->usersRepository = $usersRepository;
     }
 
     public function invite(Request $request, int $eventId)
+    {
+        $userToInvite = $this->usersRepository->findByEmail($request->post('email'));
+        if ($userToInvite === null) {
+            return response()->json([
+                'errors' => [
+                    'email' => 'user not foudn'
+                ]
+            ]);
+        }
+
+        $this->invitationsService->invite($userToInvite, $eventId);
+        return "OK";
+    }
+
+    public function inviteMany(Request $request, int $eventId)
     {
         $this->authorize('invite', Event::find($eventId));
         foreach ($request->post('usersIds') as $userId) {

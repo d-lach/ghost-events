@@ -17,18 +17,16 @@ class InvitationsService
         $this->mailer = $mailer;
     }
 
-    function invite(int $userId, $eventId)
+    function invite(User $userToInvite, $eventId)
     {
 
         $event = $this->_retrieveEvent($eventId);
 
         // cannot invite someone who is already invited to or participate in given event
-        if ($event->hasGuest($userId) || $event->isInvited($userId))
+        if ($event->hasGuest($userToInvite->id) || $event->isInvited($userToInvite->id))
             return;
-        
-        $invitation = Invitation::make();
 
-        $userToInvite = User::find($userId);
+        $invitation = Invitation::make();
 
         $invitation->guest()->associate($userToInvite);
         $invitation->event()->associate($event);
