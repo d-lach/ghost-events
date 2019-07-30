@@ -1,4 +1,5 @@
 data
+.idea
 /etc/ssl
 /etc/log
 /etc/nginx/app.conf
